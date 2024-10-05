@@ -93,13 +93,22 @@ public class PlayerController : MonoBehaviour
         //If it has correct properties, then call its Interact function
         if(hit2D.collider != null)
         {
-            InteractableObject obj = hit2D.collider.GetComponent<InteractableObject>();
+            IInteractable obj = hit2D.collider.GetComponent(typeof(IInteractable)) as IInteractable;
             if (obj != null)
             {
                 //TODO:
                 //Call function that triggers action within the object
+                Debug.Log("Found valid Object");
                 obj.Interact(gameObject);
             }
+            else
+            {
+                Debug.Log("Invalid Object");
+            }
+        }
+        else
+        {
+            Debug.Log("Object is Null");
         }
         
 
