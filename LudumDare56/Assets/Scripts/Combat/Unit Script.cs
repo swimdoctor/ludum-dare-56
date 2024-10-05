@@ -71,7 +71,7 @@ public class UnitScript : MonoBehaviour
         if (currentTarget == null)
         {
             currentTarget = FindNewTarget();
-            Debug.Log("Target is Null, Targeting" + currentTarget);
+            Debug.Log("Target is Null, Targeting " + currentTarget);
         }
 
         if (currentTarget == null)
@@ -83,7 +83,7 @@ public class UnitScript : MonoBehaviour
             if (currentTarget.currentHP <= 0)
             {
                 currentTarget = FindNewTarget();
-                Debug.Log("Target is Dead, Targeting" + currentTarget);
+                Debug.Log("Target is Dead, Targeting " + currentTarget);
             }
 
             float distToTarget = Vector2.Distance(transform.position, currentTarget.transform.position);
@@ -91,6 +91,18 @@ public class UnitScript : MonoBehaviour
             {   // Move towards target
                 Vector2 direction = (currentTarget.transform.position - transform.position).normalized;
                 rb.AddForce(direction * stats.moveSpeed, ForceMode2D.Force);
+
+                // limit Velocity
+                if (rb.velocity.magnitude > stats.moveSpeed)
+                {
+                    // Calculate the excess velocity
+                    Vector2 excessVelocity = rb.velocity - rb.velocity.normalized * stats.moveSpeed;
+
+                    // Apply a counterforce in the opposite direction of the excess velocity
+                    rb.AddForce(-excessVelocity.normalized * 1, ForceMode2D.Impulse);
+                }
+
+
             }
             else
             {
