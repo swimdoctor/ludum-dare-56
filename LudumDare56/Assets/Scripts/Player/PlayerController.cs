@@ -13,6 +13,10 @@ public class PlayerController : MonoBehaviour
 
     private PlayerInputActions playerInputActions;
 
+    [SerializeField] private LayerMask interactableLayerMask;
+
+    [SerializeField] private float interactRange;
+
 
     private void Awake()
     {
@@ -38,6 +42,8 @@ public class PlayerController : MonoBehaviour
         playerInputActions.World.Move.started += MoveAction;
         playerInputActions.World.Move.performed += MoveAction;
         playerInputActions.World.Move.canceled += MoveAction;
+
+        playerInputActions.World.Interact.performed += InteractAction;
     }
 
     private void UnSubscribeInputActions()
@@ -45,6 +51,8 @@ public class PlayerController : MonoBehaviour
         playerInputActions.World.Move.started -= MoveAction;
         playerInputActions.World.Move.performed -= MoveAction;
         playerInputActions.World.Move.canceled -= MoveAction;
+
+        playerInputActions.World.Interact.performed -= InteractAction;
     }
 
     private void MoveAction(InputAction.CallbackContext context)
@@ -53,6 +61,51 @@ public class PlayerController : MonoBehaviour
         playerMovement.SetMovement(inputMovement);
     }
 
+    //Action Callback when teh player wants to interact with an object
+    private void InteractAction(InputAction.CallbackContext context)
+    {
+        Vector2 direction = new Vector2();
+        Direction direc = playerMovement.GetDirection();
+        switch (direc)
+        {
+            case (Direction.Up):
+                Debug.Log("Checking up");
+                direction = Vector2.up;
+                break;
+            case (Direction.Down):
+                Debug.Log("Checking Down");
+                direction = Vector2.down;
+                break;
+            case(Direction.Left):
+                Debug.Log("Checking Left");
+                direction = Vector2.left;
+                break;
+            case (Direction.Right):
+                Debug.Log("Checking Right");
+                direction = Vector2.right;
+                break;
+        }
+
+        //Find an object in the raycast
+
+        RaycastHit2D hit2D = Physics2D.Raycast(transform.position, direction, interactRange, interactableLayerMask);
+
+        //If it has correct properties, then call its Interact function
+        if(hit2D.collider != null)
+        {
+            InteractableObject obj = hit2D.collider.GetComponent<InteractableObject>();
+            if (obj != null)
+            {
+                //TODO:
+                //Call function that triggers action within the object
+                obj.Interact(gameObject);
+            }
+        }
+        
+
+    }
+
+    //Update Current ActionMap
     private void SwitchActionMap(string mapName = "")
     {
         playerInputActions.World.Disable();
@@ -68,6 +121,8 @@ public class PlayerController : MonoBehaviour
                 break;
         }
     }
+
+    
 
 
 

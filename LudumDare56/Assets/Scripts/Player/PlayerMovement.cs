@@ -11,18 +11,35 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private float moveSpeed;
 
+    private Direction direction;
 
+    public Direction GetDirection()
+    {
+        return direction;
+    } 
 
+    private void Awake()
+    {
+        direction = Direction.Up;
+    }
     private void FixedUpdate()
     {
+
+
+        DecideFacingDirection();
+
         MoveCharacter();
+
+        
     }
 
+    //Update the input Vector for MoveCharacter
     public void SetMovement(Vector2 movement)
     {
         inputMovement = movement;
     }
 
+    //Move the character in the scene based on inputMovement
     private void MoveCharacter()
     {
         Vector2 movement = new Vector2();
@@ -40,9 +57,47 @@ public class PlayerMovement : MonoBehaviour
         movement *= Time.deltaTime;
 
         rigidbody.MovePosition(rigidbody.position+movement);
+
+
     }
 
+    //Figure out direction last movement was in and sets direction
+    private void DecideFacingDirection()
+    {
+        if (inputMovement.x == inputMovement.y)
+        {
+            return;
+        }
 
+        if (Mathf.Abs(inputMovement.x) > Mathf.Abs(inputMovement.y))
+        {
+            if (inputMovement.x > 0)
+            {
+                direction = Direction.Right;
+            }
+            else
+            {
+                direction = Direction.Left;
+            }
+        }
+        else
+        {
+            if (inputMovement.y > 0)
+            {
+                direction = Direction.Up;
+            }
+            else
+            {
+                direction = Direction.Down;
+            }
+        }
+    }
+}
 
-
+public enum Direction
+{
+    Up,
+    Down,
+    Left,
+    Right
 }
