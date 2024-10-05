@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 
-public class ShopInventory : MonoBehaviour
+
+public class ShopInventory : MonoBehaviour, IInteractable
 {
     [SerializeField] List<ShopItem> items;
 
@@ -13,11 +14,13 @@ public class ShopInventory : MonoBehaviour
 
     public void Interact()
     {
+
         //TODO: Called when Shop keeper is interacted with
     }
 
     public void OpenShop()
     {
+
         //TODO: Pause Game
         //TODO: Open shopMenu
     }
@@ -28,6 +31,10 @@ public class ShopInventory : MonoBehaviour
         //TODO: Close shopMenu
     }
 
+    public void Interact(GameObject user)
+    {
+        Debug.Log("Interacted with shoppe");
+    }
 }
 
 [System.Serializable]
