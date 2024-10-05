@@ -11,8 +11,6 @@ public class BasicAttack
     {
         new Punch(),
     };
-
-
     public string name;
     public string description;
     public float maxcooldown;
@@ -28,6 +26,8 @@ public class BasicAttack
     public float knockBackAmount = 1f;
 
     
+
+
     public virtual string getDescription()
     {
         string meleeOrRanged = "";
@@ -38,11 +38,11 @@ public class BasicAttack
         {
             meleeOrRanged = "ranged";
         }
-        
+
         return $"Deals {minDamage}-{maxDamage} base {meleeOrRanged} damage";
     }
 
-    protected float calcDamage(UnitScript sourceUnit, float minDamage, float maxDamage, bool melee = false, bool ranged = false)
+    public float calcDamage(UnitScript sourceUnit, bool melee = false, bool ranged = false)
     {
         float damage = Random.Range(minDamage, maxDamage);
 
@@ -61,13 +61,40 @@ public class BasicAttack
 
     public virtual void Activate(UnitScript attacker, UnitScript target)
     {
-        float damage = calcDamage(attacker, minDamage, maxDamage, melee: true);
-        target.changeHP(-damage, attacker);
+        float damage = calcDamage(attacker, melee: true);
+        target.ChangeHP(-damage, attacker);
 
-        target.takeKnockBack(knockBackAmount, attacker.transform.position);
+        target.TakeKnockBack(knockBackAmount, attacker.transform.position);
+        TriggerAttackTraits(attacker, target, melee: true);
+
     }
 
+    private void TriggerAttackTraits(UnitScript attacker, UnitScript target, bool melee = true)
+    {
+        foreach (Trait trait in attacker.stats.traitList)
+        {
+            trait.OnAttack(attacker, target);
+        }
+        if (melee)
+        {
+            foreach (Trait trait in target.stats.traitList)
+            {
+                trait.OnMeleeAttacked(target, attacker);
+            }
+        }
+
+    }
+
+    protected Vector2 GetDirection(UnitScript attacker, UnitScript target)
+    {
+        // helper method for projectile firing
+        return (target.transform.position - attacker.transform.position).normalized;
+    }
+
+    
+
 }
+
 
 public class Punch : BasicAttack
 {
@@ -85,4 +112,16 @@ public class Punch : BasicAttack
         knockBackAmount = 1f;
     }
     
+}
+
+public class LeafAttack : BasicAttack
+{
+    public LeafAttack()
+    {
+
+    }
+    public override void Activate(UnitScript attacker, UnitScript target)
+    {
+        attacker.FireProjectile(attacker, this, attacker.leafProjectilePrefab, GetDirection(attacker, target));
+    }
 }

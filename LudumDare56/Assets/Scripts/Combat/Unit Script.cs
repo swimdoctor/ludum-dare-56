@@ -29,6 +29,9 @@ public class UnitScript : MonoBehaviour
 
     private BasicAttack primaryAttack;
 
+    // Projectile Prefabs
+    public GameObject leafProjectilePrefab;
+
     private void OnEnable() 
     {
         rb = GetComponent<Rigidbody2D>();
@@ -60,6 +63,12 @@ public class UnitScript : MonoBehaviour
 
     private void OnDeath()
     {
+
+        foreach (Trait trait in stats.traitList)
+        {
+            trait.OnDie(this);
+        }
+
         units.Remove(this);
         Destroy(gameObject);
     }
@@ -150,9 +159,18 @@ public class UnitScript : MonoBehaviour
         return bestTarget;
     }
 
-    public bool changeHP(float amount, UnitScript source=null)
+    public bool ChangeHP(float amount, UnitScript source=null)
     {
+        if (amount < 0)
+        { // Trigger damage taken traits
+            foreach (Trait trait in stats.traitList)
+            {
+                trait.OnTakeDamage(this);
+            }
+        }
+
         currentHP += amount;
+
         Debug.Log($"Changed HP by {amount}, current {currentHP}");
         if (currentHP < 0) { // die
 
@@ -166,10 +184,22 @@ public class UnitScript : MonoBehaviour
         return false;
     }
 
-    public void takeKnockBack(float amount, Vector2 source)
+    public void TakeKnockBack(float amount, Vector2 source)
     {
         Vector2 pos = transform.position;
         Vector2 direction = (pos - source).normalized;
         rb.AddForce(direction * amount, ForceMode2D.Impulse);
     }
+    public void FireProjectile(UnitScript source, BasicAttack attack, GameObject type, Vector2 direction)
+    {
+        GameObject projectile = GameObject.Instantiate(type, transform.position, transform.rotation);
+        Projectile projectileScript = projectile.GetComponent<Projectile>();
+        projectileScript.source = source;
+        projectileScript.direction = direction;
+        projectileScript.damage = attack.calcDamage(source, ranged:true);
+
+
+
+    }
+
 }

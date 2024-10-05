@@ -1,10 +1,9 @@
 fileFormatVersion: 2
-guid: 67c9588ba84ae3842935b353194a80cd
+guid: 1abb90c8332ea3f469fcf16f2fcbcc99
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences:
-  - leafProjectilePrefab: {fileID: 6953777571587119450, guid: 6420e5040e396e84998da8ad36c9c045, type: 3}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

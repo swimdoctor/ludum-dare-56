@@ -38,6 +38,16 @@ public class Trait
         // Called after the unit attacks
     }
 
+    public virtual void OnMeleeAttacked(UnitScript unit, UnitScript attacker)
+    {
+        // Called after the unit is targeted by a melee attack
+    }
+
+    public virtual void OnTakeDamage(UnitScript unit)
+    {
+        // Called upon taking any type of damage
+    }
+
     public virtual void OnDie(UnitScript unit)
     {
 

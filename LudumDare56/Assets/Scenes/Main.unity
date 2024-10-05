@@ -285,6 +285,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9b13a046ce89754c9918f2bcf0a5b74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackPowerStat: 0.5
+  attackSpeedStat: 0.5
+  healthStat: 0.5
+  moveSpeedStat: 0.5
+  meleeAttackPower: 0
+  rangedAttackPower: 0
+  meleeAttackSpeed: 0
+  rangedAttackSpeed: 0
   moveSpeed: 1
   maxHealth: 10
   orderInParty: 0
@@ -574,6 +582,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9b13a046ce89754c9918f2bcf0a5b74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackPowerStat: 0.5
+  attackSpeedStat: 0.5
+  healthStat: 0.5
+  moveSpeedStat: 0.5
+  meleeAttackPower: 0
+  rangedAttackPower: 0
+  meleeAttackSpeed: 0
+  rangedAttackSpeed: 0
   moveSpeed: 1
   maxHealth: 10
   orderInParty: 0
@@ -842,6 +858,63 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1001 &1502679518130500729
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1271649564509646715, guid: 6420e5040e396e84998da8ad36c9c045, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.06991528
+      objectReference: {fileID: 0}
+    - target: {fileID: 1271649564509646715, guid: 6420e5040e396e84998da8ad36c9c045, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.15660197
+      objectReference: {fileID: 0}
+    - target: {fileID: 1271649564509646715, guid: 6420e5040e396e84998da8ad36c9c045, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1271649564509646715, guid: 6420e5040e396e84998da8ad36c9c045, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1271649564509646715, guid: 6420e5040e396e84998da8ad36c9c045, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1271649564509646715, guid: 6420e5040e396e84998da8ad36c9c045, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1271649564509646715, guid: 6420e5040e396e84998da8ad36c9c045, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1271649564509646715, guid: 6420e5040e396e84998da8ad36c9c045, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1271649564509646715, guid: 6420e5040e396e84998da8ad36c9c045, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1271649564509646715, guid: 6420e5040e396e84998da8ad36c9c045, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6953777571587119450, guid: 6420e5040e396e84998da8ad36c9c045, type: 3}
+      propertyPath: m_Name
+      value: LeafProjectile
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6420e5040e396e84998da8ad36c9c045, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -850,3 +923,4 @@ SceneRoots:
   - {fileID: 25118978}
   - {fileID: 581427785}
   - {fileID: 732247751}
+  - {fileID: 1502679518130500729}
