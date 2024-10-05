@@ -6,45 +6,76 @@ using UnityEngine;
 
 public class BasicAttack
 {
+
+    public static List<BasicAttack> basicAttacksList = new List<BasicAttack>()
+    {
+        new Punch(),
+    };
+
+
     public string name;
     public string description;
     public float maxcooldown;
-    public delegate void myDelegate(UnitScript attacker, UnitScript target);
-    public int attackFunction;
     public float range;
     public bool isHeal;
 
+    public bool isMelee;
+    public bool isRanged;
+
+    public float minDamage;
+    public float maxDamage;
+
     
-
-    public BasicAttack(string name, string description, float range, float cooldown, int attackFunction, bool isHeal = false)
+    public virtual string getDescription()
     {
-        this.name = name;
-        this.description = description;
-        this.range = range;
-        this.maxcooldown = cooldown;
-        this.attackFunction = attackFunction;
-        this.isHeal = isHeal;
-
-    }
-
-    public void Attack(UnitScript attacker, UnitScript target)
-    {
-        switch (this.attackFunction)
+        string meleeOrRanged = "";
+        if (isMelee)
         {
-            case 0: Punch(attacker, target); break;
-            case 1: break;
+            meleeOrRanged = "melee";
+        } else if (isRanged)
+        {
+            meleeOrRanged = "ranged";
         }
-    }
-
-    public static void Punch(UnitScript attacker, UnitScript target)
-    {
-        float minDamage = 1;
-        float maxDamage = 2;
-
-        float damage = Random.Range(minDamage, maxDamage + 1);
-
-        target.ChangeHP(-damage);
         
-        Debug.Log("hi");
+        return $"Deals {minDamage}-{maxDamage} base {meleeOrRanged} damage";
     }
+
+    protected float calcDamage(UnitScript sourceUnit, float minDamage, float maxDamage, bool melee = false, bool ranged = false)
+    {
+        float damage = Random.Range(minDamage, maxDamage);
+
+        if (melee)
+        {
+            damage *= sourceUnit.stats.meleeAttackPower;
+        }
+        if (ranged)
+        {
+            damage *= sourceUnit.stats.rangedAttackPower;
+        }
+
+        return damage;
+    }
+
+    public virtual void Activate(UnitScript attacker, UnitScript target)
+    {
+        float damage = calcDamage(attacker, minDamage, maxDamage, melee: true);
+        target.changeHP(-damage, attacker);
+    }
+
+}
+
+public class Punch : BasicAttack
+{
+    public Punch()
+    {
+        name = "Punch";
+
+        range = 1f;
+
+        maxcooldown = 2f;
+
+        minDamage = 1.5f;
+        maxDamage = 2f;
+    }
+    
 }

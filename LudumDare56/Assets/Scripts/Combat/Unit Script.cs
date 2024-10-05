@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
+using static Unity.VisualScripting.Member;
 
 public class UnitScript : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class UnitScript : MonoBehaviour
     private float primaryAttackCooldown;
     private float secondaryAttackCooldown;
 
+    
+
     [SerializeField] bool team;
 
     public float currentHP;
@@ -23,23 +26,32 @@ public class UnitScript : MonoBehaviour
 
     private UnitScript currentTarget;
 
+    private BasicAttack primaryAttack;
+
     private void OnEnable() 
     {
         rb = GetComponent<Rigidbody2D>();
         stats = GetComponent<Stats>();
+
+        stats.getBattleStats();
+        foreach (Trait trait in stats.traitList)
+        {
+            trait.ModifyStats(this);
+        }
+
+        primaryAttack = stats.primaryAttack;
+        primaryAttackCooldown = primaryAttack.maxcooldown;
+        Debug.Log($"Attack range: {primaryAttack.range}");
         currentHP = stats.maxHealth;
 
         if (units == null)
         {
-            Debug.Log("Creating new list");
             units = new List<UnitScript>();
         }
 
         if (!units.Contains(this)) // Put this unit in the list of units
         {
             units.Add(this);
-            
-            Debug.Log("Adding unit to list");
         }
         currentTarget = null;
 
@@ -59,7 +71,7 @@ public class UnitScript : MonoBehaviour
         if (currentTarget == null)
         {
             currentTarget = FindNewTarget();
-            Debug.Log("Target is Null, Targeting" + currentTarget);
+            Debug.Log("Target is Null, Targeting " + currentTarget);
         }
 
         if (currentTarget == null)
@@ -71,14 +83,26 @@ public class UnitScript : MonoBehaviour
             if (currentTarget.currentHP <= 0)
             {
                 currentTarget = FindNewTarget();
-                Debug.Log("Target is Dead, Targeting" + currentTarget);
+                Debug.Log("Target is Dead, Targeting " + currentTarget);
             }
 
             float distToTarget = Vector2.Distance(transform.position, currentTarget.transform.position);
-            if (distToTarget > stats.primaryAttack.range)
+            if (distToTarget > primaryAttack.range)
             {   // Move towards target
                 Vector2 direction = (currentTarget.transform.position - transform.position).normalized;
                 rb.AddForce(direction * stats.moveSpeed, ForceMode2D.Force);
+
+                // limit Velocity
+                if (rb.velocity.magnitude > stats.moveSpeed)
+                {
+                    // Calculate the excess velocity
+                    Vector2 excessVelocity = rb.velocity - rb.velocity.normalized * stats.moveSpeed;
+
+                    // Apply a counterforce in the opposite direction of the excess velocity
+                    rb.AddForce(-excessVelocity.normalized * 1, ForceMode2D.Impulse);
+                }
+
+
             }
             else
             {
@@ -86,8 +110,8 @@ public class UnitScript : MonoBehaviour
                 {
                     // Attack
                     Debug.Log(this + " Attacking " + currentTarget);
-                    stats.primaryAttack.Attack(this, currentTarget);
-                    primaryAttackCooldown = stats.primaryAttack.maxcooldown;
+                    primaryAttack.Activate(this, currentTarget);
+                    primaryAttackCooldown = primaryAttack.maxcooldown;
                 }
             }
         }
@@ -121,15 +145,13 @@ public class UnitScript : MonoBehaviour
                 }
             }
         }
-
         return bestTarget;
-        
-
     }
 
-    public bool ChangeHP(float amount)
+    public bool changeHP(float amount, UnitScript source=null)
     {
         currentHP += amount;
+        Debug.Log($"Changed HP by {amount}, current {currentHP}");
         if (currentHP < 0) { // die
 
             OnDeath();
