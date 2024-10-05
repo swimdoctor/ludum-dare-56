@@ -4,16 +4,14 @@ using UnityEngine;
 
 public class Stats : MonoBehaviour
 {
-    [SerializeField] public float basicAttackCooldown;
-    [SerializeField] public float basicAttackPower;
-    [SerializeField] public float moveSpeed;
-    [SerializeField] public float maxHealth;
 
-    [SerializeField] public BasicAttack primaryAttack;
+    [SerializeField] public BasicAttack primaryAttack = BasicAttacks.attacksList[0];
+    [SerializeField] public float moveSpeed = 1;
+    [SerializeField] public float maxHealth = 10;
 
-    [SerializeField] public float aggro;
+    [SerializeField] public int orderInParty;
 
-    [SerializeField] int orderInParty;
+    [SerializeField] public int aggro = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +24,4 @@ public class Stats : MonoBehaviour
     {
         //Check for aggro
     }
-
-
 }

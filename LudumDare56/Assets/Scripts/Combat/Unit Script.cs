@@ -1,28 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class UnitScript : MonoBehaviour
 {
-    private static List<UnitScript> units;
+    public static List<UnitScript> units;
 
 
     private Rigidbody2D rb;
 
 
-    [SerializeField] private float primaryAttackCooldown;
-    [SerializeField] private float secondaryAttackCooldown;
+    private float primaryAttackCooldown;
+    private float secondaryAttackCooldown;
 
-
-    [SerializeField] private float attackRange = 1f;
     
 
     [SerializeField] bool team;
 
     private float currentHP;
 
-    private Stats stats;
+    public Stats stats;
 
     private UnitScript currentTarget;
 
@@ -32,15 +31,30 @@ public class UnitScript : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         stats = GetComponent<Stats>();
-        primaryAttack = BasicAttacks.attacksList[0];
+        primaryAttack = stats.primaryAttack;
         primaryAttackCooldown = primaryAttack.maxcooldown;
         currentHP = stats.maxHealth;
-        units.Add(this);
-        if (true | !(units.Contains(this))) // Put this unit in the list of units
+
+        if (units == null)
         {
-            currentTarget = null;
+            Debug.Log("Creating new list");
+            units = new List<UnitScript>();
         }
 
+        if (!units.Contains(this)) // Put this unit in the list of units
+        {
+            units.Add(this);
+            
+            Debug.Log("Adding unit to list");
+        }
+        currentTarget = null;
+
+    }
+
+    private void OnDeath()
+    {
+        units.Remove(this);
+        Destroy(gameObject);
     }
 
     private void Update() 
@@ -50,36 +64,44 @@ public class UnitScript : MonoBehaviour
     private void FixedUpdate() {
         if (currentTarget == null)
         {
-            FindNewTarget();
+            currentTarget = FindNewTarget();
+            Debug.Log("Target is Null, Targeting" + currentTarget);
         }
 
-
-        if (currentTarget.currentHP <= 0)
+        if (currentTarget == null)
         {
-            FindNewTarget();
-        }
-
-        float distToTarget = Vector2.Distance(transform.position, currentTarget.transform.position);
-        if (distToTarget > attackRange)
-        {   // Move towards target
-            Vector2 direction = (currentTarget.transform.position - transform.position).normalized;
-            rb.AddForce(direction*stats.moveSpeed);
-        }
-        else
+            // FindNewTarget did not find a valid target
+            
+        } else
         {
-            if (primaryAttackCooldown < 0)
+            if (currentTarget.currentHP <= 0)
             {
-                // Attack
-                primaryAttack.Attack(this, currentTarget);
-                primaryAttackCooldown = primaryAttack.maxcooldown;
+                currentTarget = FindNewTarget();
+                Debug.Log("Target is Dead, Targeting" + currentTarget);
+            }
+
+            float distToTarget = Vector2.Distance(transform.position, currentTarget.transform.position);
+            if (distToTarget > primaryAttack.range)
+            {   // Move towards target
+                Vector2 direction = (currentTarget.transform.position - transform.position).normalized;
+                rb.AddForce(direction * stats.moveSpeed, ForceMode2D.Force);
+            }
+            else
+            {
+                if (primaryAttackCooldown < 0)
+                {
+                    // Attack
+                    Debug.Log(this + " Attacking " + currentTarget);
+                    primaryAttack.Attack(this, currentTarget);
+                    primaryAttackCooldown = primaryAttack.maxcooldown;
+                }
             }
         }
-
 
         
     }
 
-    private void FindNewTarget()
+    private UnitScript FindNewTarget()
     {
         UnitScript bestTarget = null;
         float highestAggro = 0;
@@ -93,7 +115,6 @@ public class UnitScript : MonoBehaviour
                 if (unit.stats.aggro > highestAggro)
                 {
                     bestTarget = unit;
-
                 }
                 else if (unit.stats.aggro == highestAggro)
                 {
@@ -107,9 +128,8 @@ public class UnitScript : MonoBehaviour
             }
         }
 
-        currentTarget = bestTarget;
-
-
+        return bestTarget;
+        
 
     }
 
@@ -117,6 +137,9 @@ public class UnitScript : MonoBehaviour
     {
         currentHP += amount;
         if (currentHP < 0) { // die
+
+            OnDeath();
+
             return true;
         } else if (currentHP > stats.maxHealth)
         {
