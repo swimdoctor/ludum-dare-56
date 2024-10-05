@@ -134,8 +134,8 @@ GameObject:
   - component: {fileID: 25118977}
   - component: {fileID: 25118976}
   - component: {fileID: 25118975}
-  - component: {fileID: 25118980}
   - component: {fileID: 25118979}
+  - component: {fileID: 25118980}
   m_Layer: 10
   m_Name: Good Guy
   m_TagString: Untagged
@@ -313,6 +313,8 @@ MonoBehaviour:
   currentHP: 0
   stats: {fileID: 0}
   leafProjectilePrefab: {fileID: 6953777571587119450, guid: 6420e5040e396e84998da8ad36c9c045, type: 3}
+  magicProjectilePrefab: {fileID: 729204814928765920, guid: 36eeb197639d42a459a1272ce6370a1b, type: 3}
+  flameProjectilePrefab: {fileID: 1382984031446089048, guid: 28d4fe5d368603947938b70e43a3d9a4, type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -572,6 +574,8 @@ MonoBehaviour:
   currentHP: 0
   stats: {fileID: 0}
   leafProjectilePrefab: {fileID: 6953777571587119450, guid: 6420e5040e396e84998da8ad36c9c045, type: 3}
+  magicProjectilePrefab: {fileID: 729204814928765920, guid: 36eeb197639d42a459a1272ce6370a1b, type: 3}
+  flameProjectilePrefab: {fileID: 1382984031446089048, guid: 28d4fe5d368603947938b70e43a3d9a4, type: 3}
 --- !u!114 &581427787
 MonoBehaviour:
   m_ObjectHideFlags: 0

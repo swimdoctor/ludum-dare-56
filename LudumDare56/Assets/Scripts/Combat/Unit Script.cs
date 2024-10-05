@@ -31,6 +31,8 @@ public class UnitScript : MonoBehaviour
 
     // Projectile Prefabs
     public GameObject leafProjectilePrefab;
+    public GameObject magicProjectilePrefab;
+    public GameObject flameProjectilePrefab;
 
     private void OnEnable() 
     {
@@ -45,7 +47,6 @@ public class UnitScript : MonoBehaviour
 
         primaryAttack = stats.primaryAttack;
         primaryAttackCooldown = primaryAttack.maxcooldown;
-        Debug.Log($"Attack range: {primaryAttack.range}");
         currentHP = stats.maxHealth;
 
         if (units == null)
@@ -82,7 +83,6 @@ public class UnitScript : MonoBehaviour
         if (currentTarget == null)
         {
             currentTarget = FindNewTarget();
-            Debug.Log("Target is Null, Targeting " + currentTarget);
         }
 
         if (currentTarget == null)
@@ -94,7 +94,6 @@ public class UnitScript : MonoBehaviour
             if (currentTarget.currentHP <= 0)
             {
                 currentTarget = FindNewTarget();
-                Debug.Log("Target is Dead, Targeting " + currentTarget);
             }
 
             float distToTarget = Vector2.Distance(transform.position, currentTarget.transform.position);
@@ -115,7 +114,6 @@ public class UnitScript : MonoBehaviour
                 if (primaryAttackCooldown < 0)
                 {
                     // Attack
-                    Debug.Log(this + " Attacking " + currentTarget);
                     primaryAttack.Activate(this, currentTarget);
                     primaryAttackCooldown = primaryAttack.maxcooldown;
                 }
@@ -144,7 +142,6 @@ public class UnitScript : MonoBehaviour
         float closestTargetDist = 99999999;
 
         bool targetTeam = !team; // Change this if healing
-        Debug.Log(units);
         foreach (UnitScript unit in units) {
             if (unit != this && unit.team == targetTeam)
             {
@@ -178,7 +175,6 @@ public class UnitScript : MonoBehaviour
 
         currentHP += amount;
 
-        Debug.Log($"Changed HP by {amount}, current {currentHP}");
         if (currentHP < 0) { // die
 
             OnDeath();
@@ -197,19 +193,12 @@ public class UnitScript : MonoBehaviour
         Vector2 direction = (pos - source).normalized;
         rb.AddForce(direction * amount, ForceMode2D.Impulse);
     }
-    public void FireProjectile(UnitScript source, BasicAttack attack, GameObject type, Vector2 direction, bool targetAlly = false)
+    public void FireProjectile(UnitScript source, BasicAttack attack, GameObject type, Vector2 direction, UnitScript target, bool targetAlly = false)
     {
-        GameObject projectile = GameObject.Instantiate(type, transform.position, transform.rotation);
+        GameObject projectile = Instantiate(type, transform.position, transform.rotation);
         Projectile projectileScript = projectile.GetComponent<Projectile>();
-        projectileScript.source = source;
-        projectileScript.direction = direction;
-        projectileScript.attack = attack;
 
-        projectileScript.isHealProjectile = targetAlly;
-
-        projectileScript.OnSpawn();
-
-
+        projectileScript.Initialize(source, direction, attack, targetAlly, target);
     }
 
 }

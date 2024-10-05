@@ -6,36 +6,43 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    public UnitScript source;
-    public Vector2 direction;
-    public BasicAttack attack;
+    protected UnitScript source;
+    protected Vector2 direction;
+    protected BasicAttack attack;
 
-    public bool isActive;
+    protected bool isActive;
 
     protected float lifetime = 2f; // Delete projectile after this many seconds
 
-    public int pierce = 1; // Number of enemies
+    protected int pierce = 1; // Number of enemies
 
-    public bool isHealProjectile;
-    public bool targetTeam;
+    protected bool isHealProjectile;
+    protected bool targetTeam;
+
+    protected UnitScript target;
 
     protected SpriteRenderer sr;
     protected Rigidbody2D rb;
 
-    public void OnSpawn()
+    public virtual void Initialize(UnitScript source, Vector2 direction, BasicAttack attack, bool isHealProjectile, UnitScript target)
     {
+        Debug.Log("Initing");
+        this.source = source;
+        this.direction = direction;
+        this.attack = attack;
+        this.isHealProjectile = isHealProjectile;
+        this.target = target;
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         if (isHealProjectile)
         {
             targetTeam = source.team;
-        } else
+        }
+        else
         {
             targetTeam = !source.team;
-            Debug.Log(source.team);
         }
         isActive = true;
-        
     }
 
     protected virtual void FixedUpdate()
@@ -54,7 +61,6 @@ public class Projectile : MonoBehaviour
         target.ChangeHP(-damage);
 
         pierce -= 1;
-        Debug.Log(pierce);
         if (pierce <= 0)
         {
             isActive = false;
@@ -92,11 +98,11 @@ public class Projectile : MonoBehaviour
         for (float t = 0; t < despawnTime; t += Time.deltaTime)
         {
             float normalizedTime = t / despawnTime;
-            color.a = Mathf.Lerp(startAlpha, 0, normalizedTime); // Fade to transparent
+            color.a = Mathf.Lerp(startAlpha, 0, normalizedTime);
             sr.color = color;
-            yield return null; // Wait for the next frame
+            yield return null;
         }
-        color.a = 0; // Ensure it's fully transparent at the end
+        color.a = 0;
         sr.color = color;
         Destroy(gameObject);
     }

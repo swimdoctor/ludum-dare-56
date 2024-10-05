@@ -5,7 +5,7 @@ using UnityEngine;
 public class Stats : MonoBehaviour
 {
 
-    [SerializeField] public BasicAttack primaryAttack = BasicAttack.basicAttacksList[1];
+    [SerializeField] public BasicAttack primaryAttack = BasicAttack.basicAttacksList[3];
 
     // Traits that determine stats in battle, these do not change at any point during a battle
     [Range(0.0f, 1.0f)]

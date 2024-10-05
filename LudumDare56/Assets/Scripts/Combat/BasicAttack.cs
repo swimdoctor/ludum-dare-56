@@ -11,6 +11,8 @@ public class BasicAttack
     {
         new Punch(),
         new LeafAttack(),
+        new MagicAttack(),
+        new FlameThrowerAttack(),
     };
     public string name;
     public string description;
@@ -86,10 +88,15 @@ public class BasicAttack
 
     }
 
-    protected Vector2 GetDirection(UnitScript attacker, UnitScript target)
+    protected Vector2 GetDirection(UnitScript attacker, UnitScript target, float inaccuracy = 0)
     {
         // helper method for projectile firing
-        return (target.transform.position - attacker.transform.position).normalized;
+
+        Vector2 dir = (target.transform.position - attacker.transform.position).normalized;
+        float radians = Mathf.Atan2(dir.y, dir.x);
+        radians += Random.Range(-inaccuracy, inaccuracy);
+        dir = new Vector2(Mathf.Cos(radians), Mathf.Sin(radians));
+        return dir;
     }
 
     
@@ -132,6 +139,49 @@ public class LeafAttack : BasicAttack
     }
     public override void Activate(UnitScript attacker, UnitScript target)
     {
-        attacker.FireProjectile(attacker, this, attacker.leafProjectilePrefab, GetDirection(attacker, target));
+        attacker.FireProjectile(attacker, this, attacker.leafProjectilePrefab, GetDirection(attacker, target), target);
+    }
+}
+
+public class MagicAttack : BasicAttack
+{
+    public MagicAttack()
+    {
+        name = "Magic Attack";
+
+        range = 7f;
+
+        maxcooldown = 3f;
+
+        minDamage = 2f;
+        maxDamage = 3f;
+
+        knockBackAmount = 2f;
+    }
+    public override void Activate(UnitScript attacker, UnitScript target)
+    {
+        attacker.FireProjectile(attacker, this, attacker.magicProjectilePrefab, GetDirection(attacker, target), target);
+    }
+}
+
+public class FlameThrowerAttack : BasicAttack
+{
+    public FlameThrowerAttack()
+    {
+        name = "Flamethrower";
+
+        range = 5f;
+
+        maxcooldown = 0.06f;
+
+        minDamage = 0.05f;
+        maxDamage = 0.1f;
+
+        knockBackAmount = 0f;
+    }
+    public override void Activate(UnitScript attacker, UnitScript target)
+    {
+        Vector2 dir = GetDirection(attacker, target, inaccuracy:0.25f);
+        attacker.FireProjectile(attacker, this, attacker.flameProjectilePrefab, dir, target);
     }
 }
