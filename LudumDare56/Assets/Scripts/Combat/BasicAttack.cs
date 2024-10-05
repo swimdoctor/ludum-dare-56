@@ -10,6 +10,7 @@ public class BasicAttack
     public static List<BasicAttack> basicAttacksList = new List<BasicAttack>()
     {
         new Punch(),
+        new LeafAttack(),
     };
     public string name;
     public string description;
@@ -118,7 +119,16 @@ public class LeafAttack : BasicAttack
 {
     public LeafAttack()
     {
+        name = "Leaf Attack";
 
+        range = 5f;
+
+        maxcooldown = 2f;
+
+        minDamage = 1.5f;
+        maxDamage = 2f;
+
+        knockBackAmount = 1f;
     }
     public override void Activate(UnitScript attacker, UnitScript target)
     {

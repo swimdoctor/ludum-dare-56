@@ -19,7 +19,7 @@ public class UnitScript : MonoBehaviour
 
     
 
-    [SerializeField] bool team;
+    public bool team;
 
     public float currentHP;
 
@@ -102,21 +102,16 @@ public class UnitScript : MonoBehaviour
             {   // Move towards target
                 Vector2 direction = (currentTarget.transform.position - transform.position).normalized;
                 rb.AddForce(direction * stats.moveSpeed*5, ForceMode2D.Force);
-
-                // limit Velocity
-                if (rb.velocity.magnitude > stats.moveSpeed)
-                {
-                    // Calculate the excess velocity
-                    Vector2 excessVelocity = rb.velocity - rb.velocity.normalized * stats.moveSpeed;
-
-                    // Apply a counterforce in the opposite direction of the excess velocity
-                    rb.AddForce(-excessVelocity.normalized * 0.5f, ForceMode2D.Impulse);
-                }
-
-
             }
             else
             {
+                // Stop movement
+                if (rb.velocity.magnitude > 0)
+                { 
+                    rb.velocity = Vector2.Lerp(rb.velocity, Vector2.zero, 0.75f * Time.fixedDeltaTime);
+                }
+
+
                 if (primaryAttackCooldown < 0)
                 {
                     // Attack
@@ -127,7 +122,19 @@ public class UnitScript : MonoBehaviour
             }
         }
 
-        
+        limitVelocity();
+    }
+
+    private void limitVelocity()
+    {
+        if (rb.velocity.magnitude > stats.moveSpeed)
+        {
+            // Calculate the excess velocity
+            Vector2 excessVelocity = rb.velocity - rb.velocity.normalized * stats.moveSpeed;
+
+            // Apply a counterforce in the opposite direction of the excess velocity
+            rb.AddForce(-excessVelocity.normalized * 0.5f, ForceMode2D.Impulse);
+        }
     }
 
     private UnitScript FindNewTarget()
@@ -190,14 +197,17 @@ public class UnitScript : MonoBehaviour
         Vector2 direction = (pos - source).normalized;
         rb.AddForce(direction * amount, ForceMode2D.Impulse);
     }
-    public void FireProjectile(UnitScript source, BasicAttack attack, GameObject type, Vector2 direction)
+    public void FireProjectile(UnitScript source, BasicAttack attack, GameObject type, Vector2 direction, bool targetAlly = false)
     {
         GameObject projectile = GameObject.Instantiate(type, transform.position, transform.rotation);
         Projectile projectileScript = projectile.GetComponent<Projectile>();
         projectileScript.source = source;
         projectileScript.direction = direction;
-        projectileScript.damage = attack.calcDamage(source, ranged:true);
+        projectileScript.attack = attack;
 
+        projectileScript.isHealProjectile = targetAlly;
+
+        projectileScript.OnSpawn();
 
 
     }
