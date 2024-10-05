@@ -15,8 +15,6 @@ public class UnitScript : MonoBehaviour
     private float primaryAttackCooldown;
     private float secondaryAttackCooldown;
 
-    
-
     [SerializeField] bool team;
 
     private float currentHP;
@@ -25,14 +23,10 @@ public class UnitScript : MonoBehaviour
 
     private UnitScript currentTarget;
 
-    private BasicAttack primaryAttack;
-
     private void OnEnable() 
     {
         rb = GetComponent<Rigidbody2D>();
         stats = GetComponent<Stats>();
-        primaryAttack = stats.primaryAttack;
-        primaryAttackCooldown = primaryAttack.maxcooldown;
         currentHP = stats.maxHealth;
 
         if (units == null)
@@ -81,7 +75,7 @@ public class UnitScript : MonoBehaviour
             }
 
             float distToTarget = Vector2.Distance(transform.position, currentTarget.transform.position);
-            if (distToTarget > primaryAttack.range)
+            if (distToTarget > stats.primaryAttack.range)
             {   // Move towards target
                 Vector2 direction = (currentTarget.transform.position - transform.position).normalized;
                 rb.AddForce(direction * stats.moveSpeed, ForceMode2D.Force);
@@ -92,8 +86,8 @@ public class UnitScript : MonoBehaviour
                 {
                     // Attack
                     Debug.Log(this + " Attacking " + currentTarget);
-                    primaryAttack.Attack(this, currentTarget);
-                    primaryAttackCooldown = primaryAttack.maxcooldown;
+                    stats.primaryAttack.Attack(this, currentTarget);
+                    primaryAttackCooldown = stats.primaryAttack.maxcooldown;
                 }
             }
         }
