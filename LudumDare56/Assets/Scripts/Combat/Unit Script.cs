@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
+using static Unity.VisualScripting.Member;
 
 public class UnitScript : MonoBehaviour
 {
@@ -31,21 +32,26 @@ public class UnitScript : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         stats = GetComponent<Stats>();
+
+        stats.getBattleStats();
+        foreach (Trait trait in stats.traitList)
+        {
+            trait.ModifyStats(this);
+        }
+
         primaryAttack = stats.primaryAttack;
         primaryAttackCooldown = primaryAttack.maxcooldown;
+        Debug.Log($"Attack range: {primaryAttack.range}");
         currentHP = stats.maxHealth;
 
         if (units == null)
         {
-            Debug.Log("Creating new list");
             units = new List<UnitScript>();
         }
 
         if (!units.Contains(this)) // Put this unit in the list of units
         {
             units.Add(this);
-            
-            Debug.Log("Adding unit to list");
         }
         currentTarget = null;
 
@@ -92,7 +98,7 @@ public class UnitScript : MonoBehaviour
                 {
                     // Attack
                     Debug.Log(this + " Attacking " + currentTarget);
-                    primaryAttack.Attack(this, currentTarget);
+                    primaryAttack.Activate(this, currentTarget);
                     primaryAttackCooldown = primaryAttack.maxcooldown;
                 }
             }
@@ -127,15 +133,13 @@ public class UnitScript : MonoBehaviour
                 }
             }
         }
-
         return bestTarget;
-        
-
     }
 
-    public bool ChangeHP(float amount)
+    public bool changeHP(float amount, UnitScript source=null)
     {
         currentHP += amount;
+        Debug.Log($"Changed HP by {amount}, current {currentHP}");
         if (currentHP < 0) { // die
 
             OnDeath();
