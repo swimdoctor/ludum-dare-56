@@ -17,7 +17,7 @@ public class UnitScript : MonoBehaviour
 
     [SerializeField] bool team;
 
-    private float currentHP;
+    public float currentHP;
 
     public Stats stats;
 
