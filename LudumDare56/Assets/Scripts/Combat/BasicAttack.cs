@@ -25,6 +25,8 @@ public class BasicAttack
     public float minDamage;
     public float maxDamage;
 
+    public float knockBackAmount = 1f;
+
     
     public virtual string getDescription()
     {
@@ -56,10 +58,13 @@ public class BasicAttack
         return damage;
     }
 
+
     public virtual void Activate(UnitScript attacker, UnitScript target)
     {
         float damage = calcDamage(attacker, minDamage, maxDamage, melee: true);
         target.changeHP(-damage, attacker);
+
+        target.takeKnockBack(knockBackAmount, attacker.transform.position);
     }
 
 }
@@ -76,6 +81,8 @@ public class Punch : BasicAttack
 
         minDamage = 1.5f;
         maxDamage = 2f;
+
+        knockBackAmount = 1f;
     }
     
 }

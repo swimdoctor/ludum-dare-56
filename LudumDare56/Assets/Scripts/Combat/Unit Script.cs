@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static Unity.VisualScripting.Member;
 
 public class UnitScript : MonoBehaviour
@@ -67,6 +68,7 @@ public class UnitScript : MonoBehaviour
     {
         primaryAttackCooldown -= Time.deltaTime;
     }
+
     private void FixedUpdate() {
         if (currentTarget == null)
         {
@@ -90,7 +92,7 @@ public class UnitScript : MonoBehaviour
             if (distToTarget > primaryAttack.range)
             {   // Move towards target
                 Vector2 direction = (currentTarget.transform.position - transform.position).normalized;
-                rb.AddForce(direction * stats.moveSpeed, ForceMode2D.Force);
+                rb.AddForce(direction * stats.moveSpeed*5, ForceMode2D.Force);
 
                 // limit Velocity
                 if (rb.velocity.magnitude > stats.moveSpeed)
@@ -99,7 +101,7 @@ public class UnitScript : MonoBehaviour
                     Vector2 excessVelocity = rb.velocity - rb.velocity.normalized * stats.moveSpeed;
 
                     // Apply a counterforce in the opposite direction of the excess velocity
-                    rb.AddForce(-excessVelocity.normalized * 1, ForceMode2D.Impulse);
+                    rb.AddForce(-excessVelocity.normalized * 0.5f, ForceMode2D.Impulse);
                 }
 
 
@@ -162,5 +164,12 @@ public class UnitScript : MonoBehaviour
             currentHP = stats.maxHealth;
         }
         return false;
+    }
+
+    public void takeKnockBack(float amount, Vector2 source)
+    {
+        Vector2 pos = transform.position;
+        Vector2 direction = (pos - source).normalized;
+        rb.AddForce(direction * amount, ForceMode2D.Impulse);
     }
 }
