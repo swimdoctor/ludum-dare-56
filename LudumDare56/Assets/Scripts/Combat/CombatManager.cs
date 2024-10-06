@@ -47,7 +47,7 @@ public class CombatManager : MonoBehaviour
         }
 
         List<Creature> team1 = GetTestTeam();
-        List<Creature> team2 = GetTestTeam();
+        List<Creature> team2 = Creature.GenerateTeam(5, maxSize: 3);
 
         SetupCombat(team1, team2);
 

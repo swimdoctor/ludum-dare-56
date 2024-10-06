@@ -192,8 +192,27 @@ public class Creature
 
         for (int i = 0; i < difficulty; i++)
         {
+            if (i >= maxSize) 
+            {
+                // Merge a random creature on the team with a basic creature
+                Creature basicCreature = GetBasicCreature(GetRandomEnumValue<BasicCreature>());
 
-            Creature creature = GetBasicCreature(GetRandomEnumValue<BasicCreature>());
+                int index = UnityEngine.Random.Range(0, newTeam.Count);
+                Creature creatureToMerge = newTeam[index];
+
+                Creature newCreature = Merge(creatureToMerge, basicCreature);
+
+                newTeam.RemoveAt(index); // Remove creature that got merged with
+                newTeam.Add(newCreature);
+                
+            } 
+            else
+            {
+                // Create a new creature and add it to the team
+                Creature creature = GetBasicCreature(GetRandomEnumValue<BasicCreature>());
+                newTeam.Add(creature);
+            }
+            
         }
 
         return newTeam;
