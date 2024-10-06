@@ -5,7 +5,6 @@ using UnityEngine.UI;
 public class CombatManager : MonoBehaviour
 {
     public GameObject combatantPrefab;
-    public GameObject dragScriptPrefab;
 
     public Button startButton;
 

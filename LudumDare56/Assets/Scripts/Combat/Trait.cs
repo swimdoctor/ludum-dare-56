@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.UI.CanvasScaler;
-
+ 
 public class Trait
 {
     public static List<Trait> traitsList = new List<Trait>()
