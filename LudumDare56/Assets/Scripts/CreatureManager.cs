@@ -70,8 +70,16 @@ public class CreatureManager : MonoBehaviour
 		partyLocations[index].GetChild(0).GetChild(4).GetComponent<SpriteRenderer>().sprite = creature.head;
 		partyLocations[index].GetChild(0).GetChild(5).GetComponent<SpriteRenderer>().sprite = creature.headAccessory;
 
+		//Rebind Poses
+		SpriteSkinUtility.ResetBindPose(partyLocations[index].GetChild(0).GetComponent<SpriteSkin>());
+		SpriteSkinUtility.ResetBindPose(partyLocations[index].GetChild(0).GetChild(4).GetComponent<SpriteSkin>());
+	}
 
-		//partyLocations[index].GetChild(0).GetComponent<SpriteSkin>().CacheHierarchy();
-		//partyLocations[index].GetChild(0).GetComponent<SpriteSkin>().CacheCurrentSprite(true);
+	public void UpdatePartyStats(Creature creature)
+	{
+		//Update Creature Icon
+
+		//Update Creature Stats
+		//Update Add/Kick Button
 	}
 }

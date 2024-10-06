@@ -22,7 +22,6 @@ public class OOBMenu : MonoBehaviour
 
     public GameObject menu;
     public GameObject party;
-    public GameObject partyCreatures;
     public GameObject bag;
 
 	private void OnEnable()
@@ -53,35 +52,30 @@ public class OOBMenu : MonoBehaviour
             case MenuState.None:
                 menu.SetActive(false);
                 party.SetActive(false);
-				partyCreatures.SetActive(false);
                 bag.SetActive(false);
                 //Close other menus
                 break;
             case MenuState.Menu:
 				menu.SetActive(true);
 				party.SetActive(false);
-				partyCreatures.SetActive(false);
 				bag.SetActive(false);
 				//Close other menus
 				break;
             case MenuState.Party:
 				menu.SetActive(true);
 				party.SetActive(true);
-				partyCreatures.SetActive(true);
 				bag.SetActive(false);
 				//Close other menus
 				break;
             case MenuState.Bag:
 				menu.SetActive(true);
 				party.SetActive(false);
-				partyCreatures.SetActive(false);
 				bag.SetActive(true);
 				//Close other menus
 				break;
             case MenuState.Settings:
 				menu.SetActive(true);
 				party.SetActive(false);
-				partyCreatures.SetActive(false);
 				bag.SetActive(false);
 				//OpenSettingsMenu
 				//Close other menus
