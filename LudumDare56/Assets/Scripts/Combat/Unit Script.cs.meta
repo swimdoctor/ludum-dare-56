@@ -3,7 +3,11 @@ guid: ff98a78c15db29f4796a117cb8cf39cb
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - stats: {instanceID: 0}
+  - leafProjectilePrefab: {fileID: 6953777571587119450, guid: 6420e5040e396e84998da8ad36c9c045, type: 3}
+  - magicProjectilePrefab: {fileID: 729204814928765920, guid: 36eeb197639d42a459a1272ce6370a1b, type: 3}
+  - flameProjectilePrefab: {fileID: 1382984031446089048, guid: 28d4fe5d368603947938b70e43a3d9a4, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
