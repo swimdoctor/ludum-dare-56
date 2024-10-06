@@ -73,6 +73,8 @@ public class Projectile : MonoBehaviour
         float damage = attack.calcDamage(source, ranged: true);
         target.ChangeHP(-damage);
 
+        target.TakeKnockBack(attack.knockBackAmount, transform.position);
+
         pierce -= 1;
         if (pierce <= 0)
         {
@@ -84,22 +86,31 @@ public class Projectile : MonoBehaviour
 
     protected void OnTriggerEnter2D(Collider2D collision)
     {
+
         if (isActive)
         {
-            if (collision.gameObject.layer == 10)
+            UnitScript hitUnit = collision.gameObject.GetComponent<UnitScript>();
+            if (hitUnit != null)
             {
-                if (targetTeam == false)
+                if (hitUnit.unit_id != source.unit_id)
                 {
-                    Hit(collision.gameObject.GetComponent<UnitScript>());
+                    if (collision.gameObject.layer == 10)
+                    {
+                        if (targetTeam == false)
+                        {
+                            Hit(hitUnit);
+                        }
+                    }
+                    else if (collision.gameObject.layer == 11)
+                    {
+                        if (targetTeam == true)
+                        {
+                            Hit(hitUnit);
+                        }
+                    }
                 }
             }
-            else if (collision.gameObject.layer == 11)
-            {
-                if (targetTeam == true)
-                {
-                    Hit(collision.gameObject.GetComponent<UnitScript>());
-                }
-            }
+            
         }
     }
 

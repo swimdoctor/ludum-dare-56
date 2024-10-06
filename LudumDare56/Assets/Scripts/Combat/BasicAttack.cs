@@ -13,6 +13,7 @@ public class BasicAttack
         new LeafAttack(),
         new MagicAttack(),
         new FlameThrowerAttack(),
+        new HealOrb(),
     };
     public string name;
     public string description;
@@ -28,21 +29,27 @@ public class BasicAttack
 
     public float knockBackAmount = 1f;
 
-    
 
 
-    public virtual string getDescription()
+    protected string meleeOrRanged()
     {
         string meleeOrRanged = "";
         if (isMelee)
         {
             meleeOrRanged = "melee";
-        } else if (isRanged)
+        }
+        else if (isRanged)
         {
             meleeOrRanged = "ranged";
         }
+        return meleeOrRanged;
 
-        return $"Deals {minDamage}-{maxDamage} base {meleeOrRanged} damage";
+    }
+    public virtual string getDescription()
+    {
+        
+
+        return $"Deals {NumString(minDamage)}-{NumString(maxDamage)} base {meleeOrRanged()} damage";
     }
 
     public float calcDamage(UnitScript sourceUnit, bool melee = false, bool ranged = false)
@@ -76,7 +83,7 @@ public class BasicAttack
     {
         foreach (Trait trait in attacker.stats.traitList)
         {
-            trait.OnAttack(attacker, target);
+            trait.OnAttack(attacker, target, melee);
         }
         if (melee)
         {
@@ -99,7 +106,10 @@ public class BasicAttack
         return dir;
     }
 
-    
+    protected string NumString(float amount)
+    {
+        return amount.ToString("F2");
+    }
 
 }
 
@@ -114,8 +124,8 @@ public class Punch : BasicAttack
 
         maxcooldown = 2f;
 
-        minDamage = 1.5f;
-        maxDamage = 2f;
+        minDamage = 16f;
+        maxDamage = 22f;
 
         knockBackAmount = 1f;
     }
@@ -124,6 +134,7 @@ public class Punch : BasicAttack
 
 public class LeafAttack : BasicAttack
 {
+    int num_projectiles = 3;
     public LeafAttack()
     {
         name = "Leaf Attack";
@@ -132,14 +143,21 @@ public class LeafAttack : BasicAttack
 
         maxcooldown = 2f;
 
-        minDamage = 1.5f;
-        maxDamage = 2f;
+        minDamage = 14f;
+        maxDamage = 18f;
 
-        knockBackAmount = 1f;
+        knockBackAmount = 0.5f;
     }
     public override void Activate(UnitScript attacker, UnitScript target)
     {
-        attacker.FireProjectile(attacker, this, attacker.leafProjectilePrefab, GetDirection(attacker, target), target);
+        for (int i = 0; i < num_projectiles; i++)
+        {
+            attacker.FireProjectile(attacker, this, attacker.leafProjectilePrefab, GetDirection(attacker, target, inaccuracy:0.52f), target);
+        }
+    }
+    public override string getDescription()
+    {
+        return $"Fires a volley of {num_projectiles} leaves, each dealing {NumString(minDamage)}-{NumString(maxDamage)} base {meleeOrRanged()} damage";
     }
 }
 
@@ -151,16 +169,20 @@ public class MagicAttack : BasicAttack
 
         range = 7f;
 
-        maxcooldown = 3f;
+        maxcooldown = 0.8f;
 
-        minDamage = 2f;
-        maxDamage = 3f;
+        minDamage = 5f;
+        maxDamage = 7f;
 
-        knockBackAmount = 2f;
+        knockBackAmount = 1.5f;
     }
     public override void Activate(UnitScript attacker, UnitScript target)
     {
         attacker.FireProjectile(attacker, this, attacker.magicProjectilePrefab, GetDirection(attacker, target), target);
+    }
+    public override string getDescription()
+    {
+        return $"Fires a seeking projectile that deals {NumString(minDamage)}-{NumString(maxDamage)} base {meleeOrRanged()} damage";
     }
 }
 
@@ -174,8 +196,8 @@ public class FlameThrowerAttack : BasicAttack
 
         maxcooldown = 0.06f;
 
-        minDamage = 0.05f;
-        maxDamage = 0.1f;
+        minDamage = 1f;
+        maxDamage = 1.5f;
 
         knockBackAmount = 0f;
     }
@@ -183,5 +205,37 @@ public class FlameThrowerAttack : BasicAttack
     {
         Vector2 dir = GetDirection(attacker, target, inaccuracy:0.25f);
         attacker.FireProjectile(attacker, this, attacker.flameProjectilePrefab, dir, target);
+    }
+    public override string getDescription()
+    {
+        return $"Fires a constant stream of flames, each dealing {NumString(minDamage)}-{NumString(maxDamage)} base {meleeOrRanged()} damage";
+    }
+}
+
+public class HealOrb : BasicAttack
+{
+    public HealOrb()
+    {
+        name = "Healing Orb";
+
+        range = 8f;
+
+        maxcooldown = 1.5f;
+
+        minDamage = -15f;
+        maxDamage = -10f;
+
+        knockBackAmount = 0f;
+
+        isHeal = true;
+    }
+
+    public override void Activate(UnitScript attacker, UnitScript target)
+    {
+        attacker.FireProjectile(attacker, this, attacker.healProjectilePrefab, GetDirection(attacker, target), target, targetAlly:true);
+    }
+    public override string getDescription()
+    {
+        return $"Fires a healing orb that restores {NumString(-minDamage)}-{NumString(-maxDamage)} health to allies";
     }
 }
