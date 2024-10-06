@@ -1,10 +1,20 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Creature
 {
-    public List<string> name;
+	public static List<Creature> inventory;
+	public static List<Creature> bestiary;
+	public static Creature[] party = new Creature[5];
+
+
+	public bool singleLeg;
+	public Sprite Head, Body, LeftLeg, RightLeg, LeftArm, RightArm, HeadAccessory, BackAccessory;
+	public List<string> name;
+
+
     [SerializeField] public BasicAttack primaryAttack = BasicAttack.basicAttacksList[3];
 
     // Traits that determine stats in battle, these do not change at any point during a battle
@@ -49,5 +59,15 @@ public class Creature
         moveSpeed = (moveSpeedStat * 1f + 0.5f);
         maxHealth = (healthStat * 20f + 5f);
 
+    }
+
+    public static Creature Merge(Creature A, Creature B)
+    {
+        Creature AB = new Creature();
+
+        throw new NotImplementedException("Merge not implemented");
+
+
+        return AB;
     }
 }

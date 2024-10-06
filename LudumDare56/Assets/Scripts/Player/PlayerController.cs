@@ -34,7 +34,8 @@ public class PlayerController : MonoBehaviour
     {
         UnSubscribeInputActions();
         SwitchActionMap();
-    }
+		print("disabled");
+	}
 
     private void SubscribeInputActions()
 	{
@@ -62,7 +63,7 @@ public class PlayerController : MonoBehaviour
         playerMovement.SetMovement(inputMovement);
     }
 
-    //Action Callback when teh player wants to interact with an object
+    //Action Callback when the player wants to interact with an object
     private void InteractAction(InputAction.CallbackContext context)
     {
         Vector2 direction = new Vector2();

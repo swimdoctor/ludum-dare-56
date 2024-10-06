@@ -12,6 +12,7 @@ public class OOBMenu : MonoBehaviour
         Menu,
         Party,
         Bag,
+        Merge,
         Settings
     }
 
