@@ -315,6 +315,37 @@ MonoBehaviour:
   leafProjectilePrefab: {fileID: 6953777571587119450, guid: 6420e5040e396e84998da8ad36c9c045, type: 3}
   magicProjectilePrefab: {fileID: 729204814928765920, guid: 36eeb197639d42a459a1272ce6370a1b, type: 3}
   flameProjectilePrefab: {fileID: 1382984031446089048, guid: 28d4fe5d368603947938b70e43a3d9a4, type: 3}
+--- !u!1 &255445799
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 255445800}
+  m_Layer: 0
+  m_Name: CombatManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &255445800
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 255445799}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.030865697}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -872,3 +903,4 @@ SceneRoots:
   - {fileID: 25118978}
   - {fileID: 581427785}
   - {fileID: 732247751}
+  - {fileID: 255445800}

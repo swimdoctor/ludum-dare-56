@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Stats : MonoBehaviour
+public class Creature
 {
 
     [SerializeField] public BasicAttack primaryAttack = BasicAttack.basicAttacksList[3];
@@ -22,15 +22,19 @@ public class Stats : MonoBehaviour
     public List<Trait> traitList = new List<Trait>();
 
     // Stats that are used in battle
-    [SerializeField] public float meleeAttackPower; // Multiply all attacks by this value
-    [SerializeField] public float rangedAttackPower;
-    [SerializeField] public float meleeAttackSpeed; // Multiply all attack cooldowns by this value
-    [SerializeField] public float rangedAttackSpeed;
-    [SerializeField] public float moveSpeed;
-    [SerializeField] public float maxHealth;
-    [SerializeField] public int orderInParty;
-    [SerializeField] public int aggro;
+    public float meleeAttackPower; // Multiply all attacks by this value
+    public float rangedAttackPower;
+    public float meleeAttackSpeed; // Multiply all attack cooldowns by this value
+    public float rangedAttackSpeed;
+    public float moveSpeed;
+    public float maxHealth;
+    public int orderInParty;
+    public int aggro;
 
+    public Creature()
+    {
+
+    }
 
     public void getBattleStats()
     {
@@ -45,19 +49,5 @@ public class Stats : MonoBehaviour
         moveSpeed = (moveSpeedStat * 1f + 0.5f);
         maxHealth = (healthStat * 20f + 5f);
 
-
-
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        //Set position of unit to slot corresponding to number in party
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        //Check for aggro
     }
 }

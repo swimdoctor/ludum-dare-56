@@ -23,7 +23,7 @@ public class UnitScript : MonoBehaviour
 
     public float currentHP;
 
-    public Stats stats;
+    public Creature stats;
 
     private UnitScript currentTarget;
 
@@ -34,10 +34,10 @@ public class UnitScript : MonoBehaviour
     public GameObject magicProjectilePrefab;
     public GameObject flameProjectilePrefab;
 
-    private void OnEnable() 
+    public void OnSpawned() 
     {
         rb = GetComponent<Rigidbody2D>();
-        stats = GetComponent<Stats>();
+        // stats = GetComponent<Creature>();
 
         stats.getBattleStats();
         foreach (Trait trait in stats.traitList)
