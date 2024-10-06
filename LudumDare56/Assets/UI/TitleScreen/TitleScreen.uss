@@ -1,0 +1,6 @@
+.titlescreen-button {
+    align-items: stretch;
+    height: 120px;
+    background-image: url("project://database/Assets/Sprites/UI/TitleScreen/playexit.png?fileID=1656927727&guid=c57981c0ca2bdcc4093a07f72718f3ed&type=3#playexit_0");
+    width: 360px;
+}
