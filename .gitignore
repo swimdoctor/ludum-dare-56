@@ -86,4 +86,4 @@ Thumbs.db
 
 /.idea/*
 
-!/Library/PackageCache/com.unity.2d.animation@9.1.2/Runtime/SpriteSkinUtility.cs
+!Library/PackageCache/com.unity.2d.animation@9.1.2/Runtime/SpriteSkinUtility.cs
