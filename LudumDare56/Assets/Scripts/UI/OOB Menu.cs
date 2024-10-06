@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.U2D.Animation;
 using UnityEngine.UI;
 
 
 public class OOBMenu : MonoBehaviour
 {
+    public static OOBMenu instance;
     public enum MenuState
     {
         None,
@@ -22,7 +24,10 @@ public class OOBMenu : MonoBehaviour
     public GameObject party;
     public GameObject bag;
 
-
+	private void OnEnable()
+	{
+		instance = this;
+	}
 
 	private void Start()
 	{
