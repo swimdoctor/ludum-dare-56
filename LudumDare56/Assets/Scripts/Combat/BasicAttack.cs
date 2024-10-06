@@ -74,7 +74,7 @@ public class BasicAttack
         float damage = calcDamage(attacker, melee: true);
         target.ChangeHP(-damage, attacker);
 
-        target.TakeKnockBack(knockBackAmount, attacker.transform.position);
+        target.TakeKnockBack(knockBackAmount, attacker.transform.position, attacker);
         TriggerAttackTraits(attacker, target, melee: true);
 
     }

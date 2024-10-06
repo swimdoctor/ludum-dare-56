@@ -73,7 +73,7 @@ public class Projectile : MonoBehaviour
         float damage = attack.calcDamage(source, ranged: true);
         target.ChangeHP(-damage);
 
-        target.TakeKnockBack(attack.knockBackAmount, transform.position);
+        target.TakeKnockBack(attack.knockBackAmount, transform.position, source);
 
         pierce -= 1;
         if (pierce <= 0)

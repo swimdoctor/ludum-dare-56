@@ -31,10 +31,10 @@ public class CreatureManager : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
     {
-		AddCreature(Creature.basicCreatureDict[0]);
-		AddCreature(Creature.basicCreatureDict[1]);
-		AddCreature(Creature.basicCreatureDict[2]);
-		AddCreature(Creature.basicCreatureDict[3]);
+		AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Plant));
+        AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Knight));
+        AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Steampunk));
+        AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Burger));
     }
 
 	//Player collects new creature

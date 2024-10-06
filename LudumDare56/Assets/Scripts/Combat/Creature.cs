@@ -2,16 +2,27 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
+using static Trait;
 
 public class Creature
 {
-	public static List<Creature> basicCreatureDict = new List<Creature>()//We need better names lmao
+    public enum BasicCreature
+    {
+        Burger,
+        Steampunk,
+        Plant,
+        Knight,
+    }
+
+    // Let's not use this list anymore, refer to GetBasicCreature() and use the enums
+	/*public static List<Creature> basicCreatureDict = new List<Creature>()//We need better names lmao
     {
 		new Creature("Burger", new List<string>(){"Bur", "ger"}, BasicAttack.basicAttacksList[0], .7f, .2f, .9f, .25f),
 		new Creature("Steampunk", new List<string>(){"Steam", "punk"}, BasicAttack.basicAttacksList[0], .7f, .2f, .9f, .25f),
 		new Creature("Plant", new List<string>(){"Plant", "guy"}, BasicAttack.basicAttacksList[0], .7f, .2f, .9f, .25f),
 		new Creature("Knight", new List<string>(){"Sir ", "knight"}, BasicAttack.basicAttacksList[0], .7f, .2f, .9f, .25f)
-	};
+	};*/
 
 	public bool singleLeg;
 	public Sprite head, torso, leftLeg, rightLeg, leftArm, rightArm, headAccessory, backAccessory;
@@ -39,19 +50,22 @@ public class Creature
     // Stats that are used in battle
     public float meleeAttackPower; // Multiply all attacks by this value
     public float rangedAttackPower;
-    public float meleeAttackSpeed; // Multiply all attack cooldowns by this value
+    public float meleeAttackSpeed; // Divide all attack cooldowns by this value
     public float rangedAttackSpeed;
     public float moveSpeed;
     public float maxHealth;
+
+    public float knockbackOutgoing;
+    public float knockbackIncoming;
+
     public int orderInParty;
     public int aggro;
 
-    // 
     public int mergeLevel;
 
-    public Creature() { }
+    
 
-    private Creature(string spriteName, List<string> name, BasicAttack primaryAttack, float attackPowerStat, float attackSpeedStat, float healthStat, float moveSpeedStat)
+    private Creature(string spriteName, List<string> name, BasicAttack primaryAttack, float attackPowerStat, float attackSpeedStat, float healthStat, float moveSpeedStat, List<Trait> traits)
     {
         //Stats
         this.name = name;
@@ -60,6 +74,12 @@ public class Creature
         this.attackSpeedStat = attackSpeedStat;
         this.healthStat = healthStat;
         this.moveSpeedStat = moveSpeedStat;
+
+        knockbackOutgoing = 1f;
+        knockbackIncoming = 1f;
+
+        // Traits
+        traitList = new List<Trait>(traits);
 
         //Sprites
         head = Resources.Load<Sprite>(spriteName + "_Head");
@@ -72,24 +92,123 @@ public class Creature
         backAccessory = Resources.Load<Sprite>(spriteName + "_BackAccessory") ;
     }
 
+    private float getLevelModifier()
+    {
+        return (mergeLevel * 0.5f) + 1f;
+    }
+
     public void getBattleStats()
     {
-        float attackPower = (attackPowerStat * 1f + 0.5f);
+        float attackPower = (attackPowerStat * 1f + 0.5f) * getLevelModifier();
         meleeAttackPower = attackPower;
         rangedAttackPower = attackPower;
 
-        float attackSpeed = (attackSpeedStat * -1f + 1.5f);
+        float attackSpeed = (attackSpeedStat * 1f + 0.5f) * getLevelModifier();
         meleeAttackSpeed = attackSpeed;
         rangedAttackSpeed = attackSpeed;
 
-        moveSpeed = (moveSpeedStat * 1f + 0.5f);
-        maxHealth = (healthStat * 100f + 75f);
 
+        moveSpeed = (moveSpeedStat * 1.5f + 0.5f);
+        maxHealth = (healthStat * 100f + 75f) * getLevelModifier();
     }
+
+    public static List<Trait> getTraitsFromPool(List<Traits> pool, int num = 2) { 
+        // Returns a list containing num traits chosen from pool
+        List<Trait> list = new List<Trait>();
+        List<Traits> traitPool = new List<Traits>(pool); // Create shallow copy of list so we can remove
+        for (int i = 0; i < num; i++)
+        {
+            int index = UnityEngine.Random.Range(0, traitPool.Count);
+
+            Trait trait = traitsList[(int)traitPool[index]];
+
+            list.Add(trait);
+            traitPool.RemoveAt(index);
+        }
+        return list;
+    }
+
+    public static Creature GetBasicCreature(BasicCreature i)
+    {
+        switch (i)
+        {
+            case BasicCreature.Burger:
+                return new Creature("Burger",
+                    new List<string>() { "Bur", "ger" }, BasicAttack.basicAttacksList[0], .7f, .2f, .9f, .25f,
+                    getTraitsFromPool(new List<Traits>()
+                    {
+                        Traits.Juggernaut,
+                        Traits.Healthy,
+                        Traits.Pushy,
+                        Traits.SlowTwitchMuscle }
+                    )
+                );
+
+            case BasicCreature.Steampunk:
+                return new Creature("Steampunk", new List<string>() { "Steam", "punk" }, BasicAttack.basicAttacksList[0], .7f, .2f, .9f, .25f,
+                    getTraitsFromPool(new List<Traits>()
+                    {
+                        Traits.GlassCannon,
+                        Traits.Ranger,
+                        Traits.meleeFireProjectile,
+                        Traits.FastTwitchMuscle }
+                    )
+                );
+            case BasicCreature.Plant:
+                return new Creature("Plant", new List<string>() { "Plant", "guy" }, BasicAttack.basicAttacksList[0], .7f, .2f, .9f, .25f,
+                    getTraitsFromPool(new List<Traits>()
+                    {
+                        Traits.Noticable,
+                        Traits.Healthy,
+                        Traits.Lifesteal,
+                        Traits.Brawler }
+                    )
+                );
+            case BasicCreature.Knight:
+                return new Creature("Knight", new List<string>() { "Sir ", "knight" }, BasicAttack.basicAttacksList[0], .7f, .2f, .9f, .25f,
+                    getTraitsFromPool(new List<Traits>()
+                    {
+                        Traits.Juggernaut,
+                        Traits.meleeFireProjectile,
+                        Traits.Agile,
+                        Traits.Brawler }
+                    )
+                );
+
+            default:
+                return null;
+
+        }
+    }
+
+
+    public static List<Creature> GenerateTeam(int difficulty, int maxSize = 5)
+    {
+        // Generates a team of enemy creatures.
+        // int difficulty determines the total combined merge level of all creatures
+ 
+
+        List<Creature> newTeam = new List<Creature>();
+
+        for (int i = 0; i < difficulty; i++)
+        {
+
+            Creature creature = GetBasicCreature(GetRandomEnumValue<BasicCreature>());
+        }
+
+        return newTeam;
+    }
+    public static T GetRandomEnumValue<T>() where T : Enum
+    {
+        Array values = Enum.GetValues(typeof(T));
+        return (T)values.GetValue(UnityEngine.Random.Range(0, values.Length));
+    }
+
 
     public static Creature Merge(Creature A, Creature B)
     {
-        Creature AB = new Creature();
+        Creature AB = new Creature("Knight", new List<string>() { "Merged ", "Creature" }, BasicAttack.basicAttacksList[0], .7f, .2f, .9f, .25f,
+                    new List<Trait>());
 
         AB.mergeLevel = Math.Max(A.mergeLevel, B.mergeLevel) + 1;
         if (AB.mergeLevel > 3)
@@ -120,7 +239,7 @@ public class Creature
         List<Trait> parent1traits = new List<Trait>(A.traitList);
         List<Trait> parent2traits = new List<Trait>(B.traitList);
 
-        for (int i = 0; i <= maxTraitCount; i++)
+        for (int i = 0; i < maxTraitCount; i++)
         {
             if (UnityEngine.Random.Range(0, 2) == 1)
             {

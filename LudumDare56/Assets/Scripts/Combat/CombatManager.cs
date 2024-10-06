@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -159,9 +161,13 @@ public class CombatManager : MonoBehaviour
     {
         return new List<Creature>()
         {
-            new Creature(),
-            new Creature(),
-            new Creature(),
+            Creature.GetBasicCreature(Creature.GetRandomEnumValue<Creature.BasicCreature>()),
+            Creature.GetBasicCreature(Creature.GetRandomEnumValue<Creature.BasicCreature>()),
+            Creature.GetBasicCreature(Creature.GetRandomEnumValue<Creature.BasicCreature>()),
         };
+    }
+    public static void StartCoroutineUsingManager(IEnumerator coroutine)
+    {
+        Instance.StartCoroutine(coroutine);
     }
 }

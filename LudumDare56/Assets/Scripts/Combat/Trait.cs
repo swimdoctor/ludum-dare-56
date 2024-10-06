@@ -4,12 +4,41 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.UI.CanvasScaler;
  
-public class Trait : MonoBehaviour
+public class Trait
 {
+    public enum Traits
+    {
+        Healthy,
+        Agile,
+        Lifesteal,
+        meleeFireProjectile,
+        GlassCannon,
+        FastTwitchMuscle,
+        SlowTwitchMuscle,
+        Noticable,
+        Ranger,
+        Brawler,
+        Pushy,
+        Juggernaut,
+    }
+
     public static List<Trait> traitsList = new List<Trait>()
     {
         new Healthy(),
+        new Agile(),
+        new LifeSteal(),
+        new meleeFireProjectile(),
+        new GlassCannon(),
+        new FastTwitchMuscle(),
+        new SlowTwitchMuscle(),
+        new Noticable(),
+        new Ranger(),
+        new Brawler(),
+        new Pushy(),
+        new Juggernaut(),
     };
+
+    
 
 
     public string name = "placeholder name";
@@ -80,7 +109,6 @@ class Healthy : Trait
         unit.stats.maxHealth *= modifier;
     }
 }
-
 class LifeSteal : Trait
 {
     public LifeSteal()
@@ -183,7 +211,7 @@ class FastTwitchMuscle : Trait
     }
     public override void OnBattleStart(UnitScript unit)
     {
-        StartCoroutine(Reduce(unit));
+        CombatManager.StartCoroutineUsingManager(Reduce(unit));
         
     }
     private IEnumerator Reduce(UnitScript unit)
@@ -196,7 +224,6 @@ class FastTwitchMuscle : Trait
         }
     }
 }
-
 class SlowTwitchMuscle : Trait
 {
     public SlowTwitchMuscle()
@@ -218,7 +245,7 @@ class SlowTwitchMuscle : Trait
     }
     public override void OnBattleStart(UnitScript unit)
     {
-        StartCoroutine(Increase(unit));
+        CombatManager.StartCoroutineUsingManager(Increase(unit));
 
     }
     private IEnumerator Increase(UnitScript unit)
@@ -232,7 +259,6 @@ class SlowTwitchMuscle : Trait
     }
 
 }
-
 class Noticable : Trait
 {
 
@@ -251,8 +277,105 @@ class Noticable : Trait
         unit.stats.aggro += modifier;
     }
 }
+class Agile : Trait
+{
+    public Agile()
+    {
+        name = "Agile";
+    }
 
-class ExplodeOnDeath : Trait
+    private float modifier = 1.5f;
+
+    public override string GetDescription()
+    {
+        return ($"Increases move speed by {NumString(modifier)}x.");
+    }
+
+    public override void ModifyStats(UnitScript unit)
+    {
+        unit.stats.moveSpeed *= modifier;
+    }
+}
+class Ranger : Trait
+{
+    public Ranger()
+    {
+        name = "Ranger";
+    }
+
+    private float modifier = 1.25f;
+
+    public override string GetDescription()
+    {
+        return ($"Increases ranged damage and attack speed by {NumString(modifier)}x.");
+    }
+
+    public override void ModifyStats(UnitScript unit)
+    {
+        unit.stats.rangedAttackPower *= modifier;
+        unit.stats.rangedAttackSpeed *= modifier;
+    }
+}
+class Brawler : Trait
+{
+    public Brawler()
+    {
+        name = "Brawler";
+    }
+
+    private float modifier = 1.25f;
+
+    public override string GetDescription()
+    {
+        return ($"Increases melee damage and attack speed by {NumString(modifier)}x.");
+    }
+
+    public override void ModifyStats(UnitScript unit)
+    {
+        unit.stats.meleeAttackPower *= modifier;
+        unit.stats.meleeAttackSpeed *= modifier;
+    }
+}
+class Pushy : Trait
+{
+    public Pushy()
+    {
+        name = "Pushy";
+    }
+
+    private float modifier = 2f;
+
+    public override string GetDescription()
+    {
+        return ($"Increases knockback dealt by {NumString(modifier)}x.");
+    }
+
+    public override void ModifyStats(UnitScript unit)
+    {
+        unit.stats.knockbackOutgoing *= modifier;
+    }
+}
+class Juggernaut : Trait
+{
+    public Juggernaut()
+    {
+        name = "Juggernaut";
+    }
+
+    public override string GetDescription()
+    {
+        return ($"Takes no knockback.");
+    }
+
+    public override void ModifyStats(UnitScript unit)
+    {
+        unit.stats.knockbackIncoming = 0;
+    }
+}
+
+
+// TODO: fix this
+/*class ExplodeOnDeath : Trait
 {
     public ExplodeOnDeath() {
         name = "Kamikaze";
@@ -271,4 +394,4 @@ class ExplodeOnDeath : Trait
         hitbox.ChangeHP(-damage, unit);
 
     }
-}
+}*/
