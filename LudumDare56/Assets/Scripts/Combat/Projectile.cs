@@ -26,7 +26,6 @@ public class Projectile : MonoBehaviour
 
     public virtual void Initialize(UnitScript source, Vector2 direction, BasicAttack attack, bool isHealProjectile, UnitScript target)
     {
-        Debug.Log("Initing");
         this.source = source;
         this.direction = direction;
         this.attack = attack;
@@ -36,11 +35,25 @@ public class Projectile : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         if (isHealProjectile)
         {
-            targetTeam = source.team;
+            if (source.team)
+            {
+                targetTeam = true;
+            } else
+            {
+                targetTeam = false;
+            }
+
         }
         else
         {
-            targetTeam = !source.team;
+            if (source.team)
+            {
+                targetTeam = false;
+            }
+            else
+            {
+                targetTeam = true;
+            }
         }
         isActive = true;
     }
@@ -66,6 +79,7 @@ public class Projectile : MonoBehaviour
             isActive = false;
             StartCoroutine(Despawn());
         }
+
     }
 
     protected void OnTriggerEnter2D(Collider2D collision)
@@ -74,14 +88,14 @@ public class Projectile : MonoBehaviour
         {
             if (collision.gameObject.layer == 10)
             {
-                if (!targetTeam)
+                if (targetTeam == false)
                 {
                     Hit(collision.gameObject.GetComponent<UnitScript>());
                 }
             }
             else if (collision.gameObject.layer == 11)
             {
-                if (targetTeam)
+                if (targetTeam == true)
                 {
                     Hit(collision.gameObject.GetComponent<UnitScript>());
                 }
