@@ -5,13 +5,16 @@ using UnityEngine;
 
 public class Creature
 {
-	public static List<Creature> inventory;
-	public static List<Creature> bestiary;
-	public static Creature[] party = new Creature[5];
-
+	public static List<Creature> creatureDict = new List<Creature>()//We need better names lmao
+    {
+		new Creature("Burger", new List<string>(){"Bur", "ger"}, BasicAttack.basicAttacksList[0], .7f, .2f, .9f, .25f),
+		new Creature("Steampunk", new List<string>(){"Steam", "punk"}, BasicAttack.basicAttacksList[0], .7f, .2f, .9f, .25f),
+		new Creature("Plant", new List<string>(){"Plant", "guy"}, BasicAttack.basicAttacksList[0], .7f, .2f, .9f, .25f),
+		new Creature("Knight", new List<string>(){"Sir ", "knight"}, BasicAttack.basicAttacksList[0], .7f, .2f, .9f, .25f)
+	};
 
 	public bool singleLeg;
-	public Sprite Head, Body, LeftLeg, RightLeg, LeftArm, RightArm, HeadAccessory, BackAccessory;
+	public Sprite head, torso, leftLeg, rightLeg, leftArm, rightArm, headAccessory, backAccessory;
 	public List<string> name;
 
 
@@ -43,9 +46,27 @@ public class Creature
     public int orderInParty;
     public int aggro;
 
-    public Creature()
-    {
+    public Creature() { }
 
+    private Creature(string spriteName, List<string> name, BasicAttack primaryAttack, float attackPowerStat, float attackSpeedStat, float healthStat, float moveSpeedStat)
+    {
+        //Stats
+        this.name = name;
+        this.primaryAttack = primaryAttack;
+        this.attackPowerStat = attackPowerStat;
+        this.attackSpeedStat = attackSpeedStat;
+        this.healthStat = healthStat;
+        this.moveSpeedStat = moveSpeedStat;
+
+        //Sprites
+        head = Resources.Load<Sprite>(spriteName + "_Head");
+        torso = Resources.Load<Sprite>(spriteName + "_Torso") ;
+        leftLeg = (Resources.Load<Sprite>(spriteName + "_LeftLeg") ) ?? (Resources.Load<Sprite>(spriteName + "_Leg") ) ?? (Resources.Load<Sprite>(spriteName + "_Limb") );
+		rightLeg = (Resources.Load<Sprite>(spriteName + "_RightLeg") ) ?? (Resources.Load<Sprite>(spriteName + "_Leg") ) ?? (Resources.Load<Sprite>(spriteName + "_Limb") );
+		leftArm = (Resources.Load<Sprite>(spriteName + "_LeftArm") ) ?? (Resources.Load<Sprite>(spriteName + "_Arm") ) ?? (Resources.Load<Sprite>(spriteName + "_Limb") );
+		rightArm = (Resources.Load<Sprite>(spriteName + "_RightArm") ) ?? (Resources.Load<Sprite>(spriteName + "_Arm") ) ?? (Resources.Load<Sprite>(spriteName + "_Limb") );
+		headAccessory = Resources.Load<Sprite>(spriteName + "_HeadAccessory") ;
+        backAccessory = Resources.Load<Sprite>(spriteName + "_BackAccessory") ;
     }
 
     public void getBattleStats()
