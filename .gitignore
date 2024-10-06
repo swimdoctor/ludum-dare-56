@@ -2,7 +2,7 @@
 # =============== #
 # Unity generated #
 # =============== #
-[Ll]ibrary/
+LudumDare56/Library/**
 [Tt]emp/
 [Oo]bj/
 [Bb]uild/
@@ -85,3 +85,9 @@ ehthumbs.db
 Thumbs.db
 
 /.idea/*
+
+
+!LudumDare56/Library/PackageCache/
+!LudumDare56/Library/PackageCache/com.unity.2d.animation@9.1.2/
+!LudumDare56/Library/PackageCache/com.unity.2d.animation@9.1.2/Runtime/
+!LudumDare56/Library/PackageCache/com.unity.2d.animation@9.1.2/Runtime/SpriteSkinUtility.cs

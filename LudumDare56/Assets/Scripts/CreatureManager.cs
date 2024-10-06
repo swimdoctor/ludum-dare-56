@@ -14,6 +14,9 @@ public class CreatureManager : MonoBehaviour
 	public GameObject creaturePrefab;
 	public GameObject partyMenuCreatures;
 
+	[SerializeField] Sprite Kick;
+	public Sprite Add;
+
 	Transform[] partyLocations = new Transform[5];
 
 	private void OnEnable()
