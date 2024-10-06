@@ -134,7 +134,7 @@ public class UnitScript : MonoBehaviour
             }
 
             float distToTarget = Vector2.Distance(transform.position, currentTarget.transform.position);
-            if (distToTarget > primaryAttack.range)
+            if (distToTarget > primaryAttack.range * stats.rangeModifier)
             {   // Move towards target
                 Vector2 direction = (currentTarget.transform.position - transform.position).normalized;
                 rb.AddForce(direction * stats.moveSpeed * 5, ForceMode2D.Force);
