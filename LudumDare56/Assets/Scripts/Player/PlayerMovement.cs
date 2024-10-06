@@ -36,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
     //Update the input Vector for MoveCharacter
     public void SetMovement(Vector2 movement)
     {
+        print(movement);
         inputMovement = movement;
     }
 

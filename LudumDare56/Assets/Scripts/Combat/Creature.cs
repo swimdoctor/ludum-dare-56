@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Creature
 {
-
+    public List<string> name;
     [SerializeField] public BasicAttack primaryAttack = BasicAttack.basicAttacksList[3];
 
     // Traits that determine stats in battle, these do not change at any point during a battle
