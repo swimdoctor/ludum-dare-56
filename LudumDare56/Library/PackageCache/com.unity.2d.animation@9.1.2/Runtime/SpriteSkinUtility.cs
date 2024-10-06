@@ -143,7 +143,7 @@ namespace UnityEngine.U2D.Animation
             }
         }
 
-        public static void ResetBindPose(this SpriteSkin spriteSkin) //test
+        public static void ResetBindPose(this SpriteSkin spriteSkin)
         {
             if (!spriteSkin.isValid)
                 throw new InvalidOperationException("SpriteSkin is not valid");
