@@ -5,6 +5,8 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - combatantPrefab: {fileID: 3774465801196826548, guid: 851534fb7e8d6954fac3b3eb26e8d145, type: 3}
+  - dragScriptPrefab: {fileID: 6858804129823458875, guid: 010cb697114721f499e558505e764a93, type: 3}
+  - startButton: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

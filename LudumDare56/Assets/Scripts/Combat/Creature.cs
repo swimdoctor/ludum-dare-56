@@ -17,6 +17,8 @@ public class Creature
 
     [SerializeField] public BasicAttack primaryAttack = BasicAttack.basicAttacksList[3];
 
+    public Vector2 startPosition = Vector2.zero;
+
     // Traits that determine stats in battle, these do not change at any point during a battle
     [Range(0.0f, 1.0f)]
     public float attackPowerStat = 0.5f;

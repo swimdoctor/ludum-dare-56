@@ -49,17 +49,20 @@ public class UnitScript : MonoBehaviour
         primaryAttackCooldown = primaryAttack.maxcooldown;
         currentHP = stats.maxHealth;
 
-        if (units == null)
-        {
-            units = new List<UnitScript>();
-        }
-
-        if (!units.Contains(this)) // Put this unit in the list of units
-        {
-            units.Add(this);
-        }
         currentTarget = null;
 
+    }
+
+    public void OnCombatStart()
+    {
+        Draggable dragscript = GetComponent<Draggable>();
+        if (dragscript != null)
+        {
+            Destroy(dragscript);
+        }
+
+        // Set the start position to current position
+        stats.startPosition = transform.position;
     }
 
     private void OnDeath()
@@ -70,16 +73,37 @@ public class UnitScript : MonoBehaviour
             trait.OnDie(this);
         }
 
+        gameObject.layer = 13;
         units.Remove(this);
         Destroy(gameObject);
     }
 
     private void Update() 
     {
-        primaryAttackCooldown -= Time.deltaTime;
+        if (CombatManager.Instance.combatState == CombatManager.State.Before)
+        {
+            if (!team)
+            {
+                RestrictPosition();
+            }
+        } 
+        else if (CombatManager.Instance.combatState == CombatManager.State.During)
+        {
+            primaryAttackCooldown -= Time.deltaTime;
+        }
     }
 
     private void FixedUpdate() {
+        if (CombatManager.Instance.combatState == CombatManager.State.During)
+        {
+            doDuringCombat();
+        }
+        
+    }
+
+
+    private void doDuringCombat()
+    {
         if (currentTarget == null)
         {
             currentTarget = FindNewTarget();
@@ -88,8 +112,9 @@ public class UnitScript : MonoBehaviour
         if (currentTarget == null)
         {
             // FindNewTarget did not find a valid target
-            
-        } else
+
+        }
+        else
         {
             if (currentTarget.currentHP <= 0)
             {
@@ -100,13 +125,13 @@ public class UnitScript : MonoBehaviour
             if (distToTarget > primaryAttack.range)
             {   // Move towards target
                 Vector2 direction = (currentTarget.transform.position - transform.position).normalized;
-                rb.AddForce(direction * stats.moveSpeed*5, ForceMode2D.Force);
+                rb.AddForce(direction * stats.moveSpeed * 5, ForceMode2D.Force);
             }
             else
             {
                 // Stop movement
                 if (rb.velocity.magnitude > 0)
-                { 
+                {
                     rb.velocity = Vector2.Lerp(rb.velocity, Vector2.zero, 0.75f * Time.fixedDeltaTime);
                 }
 
@@ -115,7 +140,16 @@ public class UnitScript : MonoBehaviour
                 {
                     // Attack
                     primaryAttack.Activate(this, currentTarget);
-                    primaryAttackCooldown = primaryAttack.maxcooldown;
+
+                    float cooldownMod = 1f;
+                    if (primaryAttack.isMelee)
+                    {
+                        cooldownMod = stats.meleeAttackSpeed;
+                    } else if (primaryAttack.isRanged)
+                    {
+                        cooldownMod = stats.meleeAttackSpeed;
+                    }
+                    primaryAttackCooldown = primaryAttack.maxcooldown * cooldownMod;
                 }
             }
         }
@@ -161,6 +195,29 @@ public class UnitScript : MonoBehaviour
             }
         }
         return bestTarget;
+    }
+
+    private void RestrictPosition()
+    {
+        float boundsY = 4;
+        float boundX1 = -7;
+        float boundX2 = -1;
+        if (transform.position.x > boundX2)
+        {
+            transform.position = new Vector3(boundX2, transform.position.y, transform.position.z);
+        }
+        if (transform.position.x < boundX1)
+        {
+            transform.position = new Vector3(boundX1, transform.position.y, transform.position.z);
+        }
+        if (transform.position.y > boundsY)
+        {
+            transform.position = new Vector3(transform.position.x, boundsY, transform.position.z);
+        }
+        if (transform.position.y < -boundsY)
+        {
+            transform.position = new Vector3(transform.position.x, -boundsY, transform.position.z);
+        }
     }
 
     public bool ChangeHP(float amount, UnitScript source=null)
