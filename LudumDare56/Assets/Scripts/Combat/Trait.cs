@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.UI.CanvasScaler;
  
-public class Trait
+public class Trait : MonoBehaviour
 {
     public static List<Trait> traitsList = new List<Trait>()
     {
@@ -34,7 +34,7 @@ public class Trait
         // Called when the battle begins
     }
 
-    public virtual void OnAttack(UnitScript unit, UnitScript target)
+    public virtual void OnAttack(UnitScript unit, UnitScript target, bool melee)
     {
         // Called after the unit attacks
     }
@@ -54,6 +54,11 @@ public class Trait
         // Called when a unit is destroyed
     }
 
+    protected string NumString(float amount)
+    {
+        return amount.ToString("F2");
+    }
+
 }
 
 class Healthy : Trait
@@ -67,10 +72,10 @@ class Healthy : Trait
 
     public override string GetDescription()
     { 
-        return ($"Increases max health by {modifier}x.");
+        return ($"Increases max health by {NumString(modifier)}x.");
     }
     
-    public new void ModifyStats(UnitScript unit)
+    public override void ModifyStats(UnitScript unit)
     {
         unit.stats.maxHealth *= modifier;
     }
@@ -83,16 +88,20 @@ class LifeSteal : Trait
         name = "Lifesteal";
     }
    
-    private float modifier = 0.25f;
+    private float modifier = 0.2f;
 
     public override string GetDescription()
     {
-        return ($"Steals {modifier}% of the enemy's health");
+        return ($"On melee attack, heal for {NumString(modifier*100)}% of the enemy's current health");
     }
 
-    public new void ModifyStats(UnitScript unit)
+    public override void OnAttack(UnitScript unit, UnitScript target, bool melee)
     {
-        unit.ChangeHP(modifier, unit);
+        if (melee)
+        {
+            unit.ChangeHP(modifier * target.currentHP, unit);
+        }
+        
     }
 }
 class meleeFireProjectile : Trait
@@ -101,12 +110,11 @@ class meleeFireProjectile : Trait
     {
         name = "Energy Slash";
     }
-    private float percentChance = 0.10f;
-    private float randomChance = Random.value;
-    MagicAttack projectile;
+    private float percentChance = 0.15f;
+    
     public override string GetDescription()
     {
-        return ($"has a {percentChance}% chance to fire a projectile on melee hit ");
+        return ($"Has a {NumString(percentChance * 100)}% chance to fire a projectile on melee hit ");
     }
     private Vector2 GetDirection(UnitScript attacker, UnitScript target, float inaccuracy = 0)
     {
@@ -118,13 +126,13 @@ class meleeFireProjectile : Trait
         dir = new Vector2(Mathf.Cos(radians), Mathf.Sin(radians));
         return dir;
     }
-    public new void OnAttack(UnitScript unit, UnitScript target)
+    public override void OnAttack(UnitScript unit, UnitScript target, bool melee)
     {
-        
+        float randomChance = Random.value;
        
         if(randomChance > percentChance)
         {
-            unit.FireProjectile(unit,projectile,unit.magicProjectilePrefab, GetDirection(unit,target), target);
+            unit.FireProjectile(unit, new MagicAttack(), unit.magicProjectilePrefab, GetDirection(unit, target), target);
             //fire projectile
         }
         else
@@ -140,17 +148,18 @@ class GlassCannon : Trait
     {
            name = "Glass Cannon";
     }
-    private float modifier = 1.5f;
+    private float positiveModifier = 1.5f;
+    private float negativeModifier = 0.5f;
     public override string GetDescription()
     {
-        return ($"increases attack power and attack speed by {modifier}x, but reduces max health by {modifier}");
+        return ($"increases attack power and attack speed by {NumString(positiveModifier)}x, but reduces max health by {NumString(negativeModifier)}x");
     }
     public new void ModifyStats(UnitScript unit)
     {
-        unit.stats.maxHealth /= modifier;
-        unit.stats.attackSpeedStat *= modifier;
-        unit.stats.meleeAttackPower *= modifier;
-        unit.stats.rangedAttackPower *= modifier;
+        unit.stats.maxHealth *= negativeModifier;
+        unit.stats.attackSpeedStat *= positiveModifier;
+        unit.stats.meleeAttackPower *= positiveModifier;
+        unit.stats.rangedAttackPower *= positiveModifier;
     }
 }
 class FastTwitchMuscle : Trait
@@ -159,30 +168,30 @@ class FastTwitchMuscle : Trait
     {
         name = "Fast Twitch Muscle Fibers";
     }
-    private float healthBuff = 10f;
-    private float attackBuff = 20f;
+    private float healthBuff = 1.25f;
+    private float attackBuff = 1.5f;
 
     public override string GetDescription()
     {
-        return ($"Massively boosts health by {healthBuff} and attack by {attackBuff} at start of battle, but reduces health and attack power throughout the battle");
+        return ($"Boosts health by {NumString(healthBuff)}x and attack by {NumString(attackBuff)}x at start of battle, but attack power decays over time");
     }
-    public new void ModifyStats(UnitScript unit)
+    public override void ModifyStats(UnitScript unit)
     {
-        unit.stats.maxHealth += healthBuff;
-        unit.stats.meleeAttackPower += attackBuff;
-        unit.stats.rangedAttackPower += attackBuff;
+        unit.stats.maxHealth *= healthBuff;
+        unit.stats.meleeAttackPower *= attackBuff;
+        unit.stats.rangedAttackPower *= attackBuff;
     }
-    public new void OnBattleStart(UnitScript unit)
+    public override void OnBattleStart(UnitScript unit)
     {
-        Reduce(unit);
+        StartCoroutine(Reduce(unit));
         
     }
     private IEnumerator Reduce(UnitScript unit)
     {
         while (true)
         {
-            unit.stats.meleeAttackPower -= 0.1f;
-            unit.stats.rangedAttackPower -= 0.1f;
+            unit.stats.meleeAttackPower *= 0.925f;
+            unit.stats.rangedAttackPower *= 0.925f;
             yield return new WaitForSeconds(1f);
         }
     }
@@ -194,31 +203,31 @@ class SlowTwitchMuscle : Trait
     {
         name = "Slow Twitch Muscle Fibers";
     }
-    private float healthDebuff = 5f;
-    private float attackDebuff = 5f;
+    private float healthDebuff = 0.75f;
+    private float attackDebuff = 0.6f;
 
     public override string GetDescription()
     {
-        return ($"Massively debuffs health by {healthDebuff} and attack by {attackDebuff} at start of battle, but increases health and attack power throughout the battle");
+        return ($"Debuffs health to {NumString(healthDebuff)}x and attack to {NumString(attackDebuff)}x at start of battle, but attack power grows over time.");
     }
-    public new void ModifyStats(UnitScript unit)
+    public override void ModifyStats(UnitScript unit)
     {
-        unit.stats.maxHealth += healthDebuff;
-        unit.stats.meleeAttackPower += attackDebuff;
-        unit.stats.rangedAttackPower += attackDebuff;
+        unit.stats.maxHealth *= healthDebuff;
+        unit.stats.meleeAttackPower *= attackDebuff;
+        unit.stats.rangedAttackPower *= attackDebuff;
     }
-    public new void OnBattleStart(UnitScript unit)
+    public override void OnBattleStart(UnitScript unit)
     {
-        Increase(unit);
+        StartCoroutine(Increase(unit));
 
     }
     private IEnumerator Increase(UnitScript unit)
     {
         while (true)
         {
-            unit.stats.meleeAttackPower += 0.3f;
-            unit.stats.rangedAttackPower += 0.3f;
-            yield return new WaitForSeconds(4f);
+            unit.stats.meleeAttackPower += 0.05f;
+            unit.stats.rangedAttackPower += 0.05f;
+            yield return new WaitForSeconds(1f);
         }
     }
 

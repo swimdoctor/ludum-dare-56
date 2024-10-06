@@ -2,17 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MagicProjectile : Projectile
+public class HealProjectile : Projectile
 {
     private float speed = 0.1f;
-    
+
 
     public override void Initialize(UnitScript source, Vector2 direction, BasicAttack attack, bool isHealProjectile, UnitScript target)
     {
         base.Initialize(source, direction, attack, isHealProjectile, target);
         this.pierce = 1;
         this.lifetime = 2f;
-        
     }
 
     private void Update()
@@ -26,14 +25,14 @@ public class MagicProjectile : Projectile
         if (target == null)
         {
             target = source.FindNewTarget();
-            
+
         }
         if (target == null)
         {
             isActive = false;
             StartCoroutine(Despawn());
-        } 
-        else if (isActive) 
+        }
+        else if (isActive)
         {
             rb.MovePosition(Vector2.MoveTowards((new Vector2(rb.position.x, rb.position.y)), target.transform.position, speed));
         }

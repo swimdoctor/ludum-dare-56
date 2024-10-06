@@ -15,7 +15,7 @@ public class Creature
 	public List<string> name;
 
 
-    [SerializeField] public BasicAttack primaryAttack = BasicAttack.basicAttacksList[3];
+    [SerializeField] public BasicAttack primaryAttack = BasicAttack.basicAttacksList[Random.Range(0, 5)];
 
     public Vector2 startPosition = Vector2.zero;
 
@@ -59,7 +59,7 @@ public class Creature
         rangedAttackSpeed = attackSpeed;
 
         moveSpeed = (moveSpeedStat * 1f + 0.5f);
-        maxHealth = (healthStat * 20f + 5f);
+        maxHealth = (healthStat * 100f + 75f);
 
     }
 

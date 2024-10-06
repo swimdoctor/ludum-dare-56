@@ -10,6 +10,10 @@ public class UnitScript : MonoBehaviour
 {
     public static List<UnitScript> units;
 
+    public static int num_units;
+
+    public int unit_id;
+
 
     private Rigidbody2D rb;
 
@@ -33,9 +37,13 @@ public class UnitScript : MonoBehaviour
     public GameObject leafProjectilePrefab;
     public GameObject magicProjectilePrefab;
     public GameObject flameProjectilePrefab;
+    public GameObject healProjectilePrefab;
 
     public void OnSpawned() 
     {
+        unit_id = num_units;
+        num_units++;
+
         rb = GetComponent<Rigidbody2D>();
         // stats = GetComponent<Creature>();
 
@@ -63,6 +71,11 @@ public class UnitScript : MonoBehaviour
 
         // Set the start position to current position
         stats.startPosition = transform.position;
+
+        foreach (Trait trait in stats.traitList)
+        {
+            trait.OnBattleStart(this);
+        }
     }
 
     private void OnDeath()
@@ -100,7 +113,6 @@ public class UnitScript : MonoBehaviour
         }
         
     }
-
 
     private void doDuringCombat()
     {
@@ -169,13 +181,21 @@ public class UnitScript : MonoBehaviour
         }
     }
 
-    private UnitScript FindNewTarget()
+    public UnitScript FindNewTarget()
     {
         UnitScript bestTarget = null;
         float highestAggro = 0;
         float closestTargetDist = 99999999;
 
-        bool targetTeam = !team; // Change this if healing
+        bool targetTeam;
+        if (primaryAttack.isHeal)
+        {
+            targetTeam = team;
+        } else
+        {
+            targetTeam = !team;
+        }
+
         foreach (UnitScript unit in units) {
             if (unit != this && unit.team == targetTeam)
             {
