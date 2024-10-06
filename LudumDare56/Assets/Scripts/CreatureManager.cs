@@ -28,10 +28,10 @@ public class CreatureManager : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
     {
-		AddCreature(Creature.creatureDict[0]);
-		AddCreature(Creature.creatureDict[1]);
-		AddCreature(Creature.creatureDict[2]);
-		AddCreature(Creature.creatureDict[3]);
+		AddCreature(Creature.basicCreatureDict[0]);
+		AddCreature(Creature.basicCreatureDict[1]);
+		AddCreature(Creature.basicCreatureDict[2]);
+		AddCreature(Creature.basicCreatureDict[3]);
     }
 
 	//Player collects new creature

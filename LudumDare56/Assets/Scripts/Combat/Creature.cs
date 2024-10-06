@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Creature
 {
-	public static List<Creature> creatureDict = new List<Creature>()//We need better names lmao
+	public static List<Creature> basicCreatureDict = new List<Creature>()//We need better names lmao
     {
 		new Creature("Burger", new List<string>(){"Bur", "ger"}, BasicAttack.basicAttacksList[0], .7f, .2f, .9f, .25f),
 		new Creature("Steampunk", new List<string>(){"Steam", "punk"}, BasicAttack.basicAttacksList[0], .7f, .2f, .9f, .25f),
@@ -18,7 +18,7 @@ public class Creature
 	public List<string> name;
 
 
-    [SerializeField] public BasicAttack primaryAttack = BasicAttack.basicAttacksList[Random.Range(0, 5)];
+    [SerializeField] public BasicAttack primaryAttack = BasicAttack.basicAttacksList[UnityEngine.Random.Range(0, 5)];
 
     public Vector2 startPosition = Vector2.zero;
 
@@ -45,6 +45,9 @@ public class Creature
     public float maxHealth;
     public int orderInParty;
     public int aggro;
+
+    // 
+    public int mergeLevel;
 
     public Creature() { }
 
@@ -88,9 +91,77 @@ public class Creature
     {
         Creature AB = new Creature();
 
-        throw new NotImplementedException("Merge not implemented");
+        AB.mergeLevel = Math.Max(A.mergeLevel, B.mergeLevel) + 1;
+        if (AB.mergeLevel > 3)
+        {
+            AB.mergeLevel = 3;
+        }
+
+        AB.attackPowerStat = MergeStat(A.attackPowerStat, B.attackPowerStat);
+        AB.attackSpeedStat = MergeStat(A.attackSpeedStat, B.attackSpeedStat);
+        AB.moveSpeedStat = MergeStat(A.moveSpeedStat, B.moveSpeedStat);
+        AB.healthStat = MergeStat(A.healthStat, B.healthStat);
+
+        if (UnityEngine.Random.Range(0, 2) == 1) 
+        {
+            AB.primaryAttack = A.primaryAttack;
+        } 
+        else
+        {
+            AB.primaryAttack = B.primaryAttack;
+        }
+
+        int maxTraitCount = AB.mergeLevel + 2;
+        List<Trait> traits = new List<Trait>();
+        List<Trait> takefromlist;
+        int index;
+
+        // Copy these lists to remove from later
+        List<Trait> parent1traits = new List<Trait>(A.traitList);
+        List<Trait> parent2traits = new List<Trait>(B.traitList);
+
+        for (int i = 0; i <= maxTraitCount; i++)
+        {
+            if (UnityEngine.Random.Range(0, 2) == 1)
+            {
+                takefromlist = parent1traits;
+            }
+            else
+            {
+                takefromlist = parent2traits;
+            }
+
+            index = UnityEngine.Random.Range(0, takefromlist.Count);
+            Trait trait = takefromlist[index];
+            takefromlist.RemoveAt(index);
+        }
+        
 
 
         return AB;
+    }
+
+    private static float MergeStat(float parent1stat, float parent2stat)
+    {
+        float variancePositive = 0.15f;
+        float varianceNegative = -0.07f;
+
+        float par1percent = UnityEngine.Random.Range(0f, 1f);
+        float par2percent = 1f - par1percent;
+
+        float passedDownStat = (par1percent * parent1stat + par2percent * parent2stat);
+
+        passedDownStat += UnityEngine.Random.Range(varianceNegative, variancePositive);
+
+        if (passedDownStat < 0f)
+        {
+            passedDownStat = 0f;
+        }
+        else if (passedDownStat > 1f)
+        {
+            passedDownStat = 1f;
+        }
+
+        return passedDownStat;
     }
 }
