@@ -18,7 +18,7 @@ public class Creature
 	public List<string> name;
 
 
-    [SerializeField] public BasicAttack primaryAttack = BasicAttack.basicAttacksList[Random.Range(0, 5)];
+    [SerializeField] public BasicAttack primaryAttack = BasicAttack.basicAttacksList[UnityEngine.Random.Range(0, 5)];
 
     public Vector2 startPosition = Vector2.zero;
 
