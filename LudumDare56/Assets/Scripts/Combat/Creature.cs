@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.UIElements;
 using static Trait;
@@ -32,6 +33,7 @@ public class Creature
 
 	public bool singleLeg;
 	public Sprite head, torso, leftLeg, rightLeg, leftArm, rightArm, headAccessory, backAccessory;
+    public AnimatorController headAnim, torsoAnim;
 	public List<string> name;
 
 
@@ -100,6 +102,11 @@ public class Creature
 		rightArm = (Resources.Load<Sprite>(spriteName + "_RightArm") ) ?? (Resources.Load<Sprite>(spriteName + "_Arm") ) ?? (Resources.Load<Sprite>(spriteName + "_Limb") );
 		headAccessory = Resources.Load<Sprite>(spriteName + "_HeadAccessory") ;
         backAccessory = Resources.Load<Sprite>(spriteName + "_BackAccessory") ;
+
+        //Animations
+        headAnim = Resources.Load<AnimatorController>(spriteName + "_HeadAnim");
+        torsoAnim = Resources.Load<AnimatorController>(spriteName + "_TorsoAnim");
+
     }
 
     private float getLevelModifier()
