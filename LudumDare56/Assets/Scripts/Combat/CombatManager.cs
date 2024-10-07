@@ -80,9 +80,25 @@ public class CombatManager : MonoBehaviour
 
         SetupCombat(team1, team2);
 
-        giveReward = false;
+        
 
-        surrenderButton.gameObject.SetActive(false);
+        
+    }
+
+    private void Update()
+    {
+        if (combatState == State.Before)
+        {
+            if (creatureHover >= 0)
+            {
+                unitInfo.UpdateInfo(listAllUnits[creatureHover].stats);
+                unitInfoFade.Show(0.1f);
+            }
+            else
+            {
+                unitInfoFade.Hide(0.1f);
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -163,6 +179,7 @@ public class CombatManager : MonoBehaviour
 
     public void SetupCombat(List<Creature> playerTeam, List<Creature> enemyTeam)
     {
+        UnitScript.num_units = 0;
         listUnits = new List<UnitScript>();
         combatState = State.Before;
 
@@ -219,10 +236,17 @@ public class CombatManager : MonoBehaviour
         listAllUnits = new List<UnitScript>(listUnits);
 
         UnitScript.units = listUnits;
+        
+
+        creatureHover = -1;
 
         startButton.gameObject.SetActive(true);
 
-        
+        giveReward = false;
+
+        surrenderButton.gameObject.SetActive(false);
+
+
     }
 
     public void StartCombat()
