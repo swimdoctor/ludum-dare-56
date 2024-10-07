@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class CombatManager : MonoBehaviour
 {
+    public string OverworldScene;
     public GameObject combatantPrefab;
 
     public Button startButton;
@@ -15,9 +17,11 @@ public class CombatManager : MonoBehaviour
     private FadeInOut unitInfoFade;
 
     public GameObject victoryUI;
+    [SerializeField] private Text victoryText;
     private FadeInOut victoryFade;
 
-    public Creature reward;
+    public static Creature reward;
+    public static bool giveReward;
 
     public enum State
     {
@@ -29,6 +33,7 @@ public class CombatManager : MonoBehaviour
     public State combatState;
 
     public List<UnitScript> listUnits;
+    private List<UnitScript> listAllUnits; // Includes dead units
 
     // Static (global) reference to the single existing instance of the object
     private static CombatManager _instance = null;
@@ -57,13 +62,15 @@ public class CombatManager : MonoBehaviour
 
         unitInfo = unitInfoPanel.GetComponent<UnitInfoScript>();
         unitInfoFade = unitInfo.GetComponent<FadeInOut>();
+        
         victoryFade = victoryUI.GetComponent<FadeInOut>();
 
-        List<Creature> team1 = GetTestTeam();
+        List<Creature> team1 = CreatureManager.instance.party;
         List<Creature> team2 = Creature.GenerateTeam(7, maxSize: 3);
 
         SetupCombat(team1, team2);
 
+        giveReward = false;
     }
 
     private void FixedUpdate()
@@ -84,60 +91,86 @@ public class CombatManager : MonoBehaviour
 
         if (allyCount == 0)
         {
-            EndGame();
-            // TODO: Lose
-            
-
+            if (combatState == State.During)
+            {
+                EndGame();
+                Win(); // TODO
+            }
         }
         else if (enemyCount == 0)
         {
-            EndGame();
-            // TODO: Win
+            if (combatState == State.During)
+            {
+                EndGame();
+                Win();
+            }
         }
-
     }
 
     private void EndGame()
     {
-        if (combatState == State.During)
-        {
-            combatState = State.After;
+        combatState = State.After;
+    }
 
-            unitInfo.UpdateInfo(reward);
-            unitInfoFade.Show();
-            
-            victoryFade.Show();
+    private void Win()
+    {
+        unitInfo.UpdateInfo(reward);
+        unitInfoFade.Show();
+
+        victoryText.text = $"{reward.Name} was like super impressed by your party's prowess. Let {reward.Name} join your team?";
+        victoryFade.Show();
+    }
+
+    public void RecruitUnit()
+    {
+        reward.startPosition = Vector2.zero;
+        giveReward = true;
+    }
+
+    public void ExitCombat()
+    {
+        foreach (UnitScript unit in listAllUnits)
+        {
+            Destroy(unit);
         }
+
+        SceneManager.LoadScene(OverworldScene);
     }
 
     public void SetupCombat(List<Creature> playerTeam, List<Creature> enemyTeam)
     {
+        listUnits = new List<UnitScript>();
         combatState = State.Before;
 
         foreach (Creature creature in playerTeam)
         {
-            // We need to create a Sprite, and put the creature in that sprite
-            GameObject newGuy = Instantiate(combatantPrefab);
-            UnitScript unit = newGuy.GetComponent<UnitScript>();
-
-            newGuy.AddComponent<Draggable>();
-
-            unit.stats = creature;
-            unit.team = false;
-
-            if (unit.stats.startPosition == Vector2.zero)
+            if (creature != null)
             {
-                unit.transform.position = new Vector2(Random.Range(-6f, -2f), Random.Range(-4f, 4f));
-            } else
-            {
-                unit.transform.position = unit.stats.startPosition;
+                // We need to create a Sprite, and put the creature in that sprite
+                GameObject newGuy = Instantiate(combatantPrefab);
+                UnitScript unit = newGuy.GetComponent<UnitScript>();
+
+                newGuy.AddComponent<Draggable>();
+
+                unit.stats = creature;
+                unit.team = false;
+
+                Debug.Log(unit.stats + " " + unit.stats.startPosition);
+                if (unit.stats.startPosition == Vector2.zero)
+                {
+                    unit.transform.position = new Vector2(Random.Range(-6f, -2f), Random.Range(-4f, 4f));
+                }
+                else
+                {
+                    unit.transform.position = unit.stats.startPosition;
+                }
+
+                unit.gameObject.layer = 10;
+
+                unit.OnSpawned();
+
+                listUnits.Add(unit);
             }
-
-            unit.gameObject.layer = 10;
-
-            unit.OnSpawned();
-
-            listUnits.Add(unit);
         }
 
         foreach (Creature creature in enemyTeam)
@@ -158,6 +191,8 @@ public class CombatManager : MonoBehaviour
         }
 
         reward = enemyTeam[0];
+
+        listAllUnits = new List<UnitScript>(listUnits);
 
         UnitScript.units = listUnits;
 

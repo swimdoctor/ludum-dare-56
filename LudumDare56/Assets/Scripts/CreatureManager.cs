@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.U2D.Animation;
 using UnityEngine.UI;
 
@@ -31,10 +32,35 @@ public class CreatureManager : MonoBehaviour
 	private void OnEnable()
 	{
 		instance = this; 
-	}
 
-	// Start is called before the first frame update
-	void Start()
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log($"Scene loaded: {scene.name} with mode: {mode}");
+        // You can add your logic here for what to do when the scene is loaded
+
+		if (CombatManager.giveReward)
+		{
+			StartCoroutine(giveNewCreature());
+		}
+    }
+
+	IEnumerator giveNewCreature()
+	{
+		yield return null;
+        AddCreature(CombatManager.reward);
+        CombatManager.giveReward = false;
+    }
+
+    // Start is called before the first frame update
+    void Start()
 	{
 		for(int i = 0; i < 5; i++)
 		{

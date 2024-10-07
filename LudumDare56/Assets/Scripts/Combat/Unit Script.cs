@@ -123,7 +123,6 @@ public class UnitScript : MonoBehaviour
         }
         if (!isAlive)
         {
-            Debug.Log("Am dead");
             currentHP = 0;
             rb.velocity = Vector3.zero;
         }

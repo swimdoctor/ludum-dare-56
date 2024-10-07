@@ -163,7 +163,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Stats
+  m_Text: Base Stats
 --- !u!1 &3193389844433520865
 GameObject:
   m_ObjectHideFlags: 0
@@ -577,6 +577,8 @@ GameObject:
   - component: {fileID: 7206272497329746989}
   - component: {fileID: 5383149129720456570}
   - component: {fileID: 3138590068235958921}
+  - component: {fileID: 3794725400900375578}
+  - component: {fileID: 8283895577523890323}
   m_Layer: 5
   m_Name: UnitInfo
   m_TagString: Untagged
@@ -662,6 +664,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 838a9853033d5af4483fff0473497b66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!225 &3794725400900375578
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7838901011522644082}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &8283895577523890323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7838901011522644082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42894cf5117c8a7409e28bb7ad5816c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeDuration: 0.6
 --- !u!1 &8422843643684336468
 GameObject:
   m_ObjectHideFlags: 0

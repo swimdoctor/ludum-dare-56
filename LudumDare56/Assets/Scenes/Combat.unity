@@ -166,10 +166,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc7e9f31974243c47b763c6324ef3e74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OverworldScene: SwampScene
   combatantPrefab: {fileID: 3774465801196826548, guid: 851534fb7e8d6954fac3b3eb26e8d145, type: 3}
   startButton: {fileID: 1409617187}
   unitInfoPanel: {fileID: 1436950952}
   victoryUI: {fileID: 461747207}
+  victoryText: {fileID: 1688580485}
   combatState: 0
   listUnits: []
 --- !u!1 &316963387
@@ -185,7 +187,7 @@ GameObject:
   - component: {fileID: 316963390}
   - component: {fileID: 316963389}
   m_Layer: 5
-  m_Name: Button (Legacy) (1)
+  m_Name: Accept Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -254,7 +256,31 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 316963390}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 255445801}
+        m_TargetAssemblyTypeName: CombatManager, Assembly-CSharp
+        m_MethodName: RecruitUnit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 255445801}
+        m_TargetAssemblyTypeName: CombatManager, Assembly-CSharp
+        m_MethodName: ExitCombat
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &316963390
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -386,7 +412,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42894cf5117c8a7409e28bb7ad5816c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeDuration: 1
+  fadeDuration: 0.6
 --- !u!225 &461747212
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -561,7 +587,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Kill
+  m_Text: Recruit
 --- !u!222 &562560697
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1174,9 +1200,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 780168911}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 448.25, y: -321}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -228, y: 80}
   m_SizeDelta: {x: 384, y: 96}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1409617187
@@ -1285,7 +1311,7 @@ GameObject:
   - component: {fileID: 1428241041}
   - component: {fileID: 1428241040}
   m_Layer: 5
-  m_Name: Text (Legacy)
+  m_Name: Victory Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1307,7 +1333,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -109.05}
+  m_AnchoredPosition: {x: 0, y: -141}
   m_SizeDelta: {x: 700, y: 222.0969}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1428241040
@@ -1332,10 +1358,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 2230732570650464555, guid: 9917bfdff75eb124fbd4ad28fe1e9819, type: 3}
-    m_FontSize: 96
+    m_FontSize: 64
     m_FontStyle: 1
     m_BestFit: 0
-    m_MinSize: 9
+    m_MinSize: 6
     m_MaxSize: 96
     m_Alignment: 1
     m_AlignByGeometry: 0
@@ -1462,31 +1488,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7838901011522644082, guid: 09d89e1dbb1b6cd4cb2dd542a2c41f9e, type: 3}
   m_PrefabInstance: {fileID: 3196457985923132901}
   m_PrefabAsset: {fileID: 0}
---- !u!225 &1436950956
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1436950952}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
---- !u!114 &1436950957
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1436950952}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42894cf5117c8a7409e28bb7ad5816c8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fadeDuration: 0.6
 --- !u!1 &1688580483
 GameObject:
   m_ObjectHideFlags: 0
@@ -1499,7 +1500,7 @@ GameObject:
   - component: {fileID: 1688580486}
   - component: {fileID: 1688580485}
   m_Layer: 5
-  m_Name: Text (Legacy) (1)
+  m_Name: Request Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1521,8 +1522,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 16}
-  m_SizeDelta: {x: -64, y: -287.9031}
+  m_AnchoredPosition: {x: 0, y: 12.35199}
+  m_SizeDelta: {x: -64, y: -263.1992}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1688580485
 MonoBehaviour:
@@ -1546,7 +1547,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 2230732570650464555, guid: 9917bfdff75eb124fbd4ad28fe1e9819, type: 3}
-    m_FontSize: 48
+    m_FontSize: 36
     m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 0
@@ -1623,7 +1624,7 @@ GameObject:
   - component: {fileID: 2060030501}
   - component: {fileID: 2060030500}
   m_Layer: 5
-  m_Name: Button (Legacy)
+  m_Name: Deny Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1692,7 +1693,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2060030501}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 255445801}
+        m_TargetAssemblyTypeName: CombatManager, Assembly-CSharp
+        m_MethodName: ExitCombat
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2060030501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1819,10 +1832,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5352195419935314921, guid: 09d89e1dbb1b6cd4cb2dd542a2c41f9e, type: 3}
-      propertyPath: m_Text
-      value: Base Stats
-      objectReference: {fileID: 0}
     - target: {fileID: 7838901011522644082, guid: 09d89e1dbb1b6cd4cb2dd542a2c41f9e, type: 3}
       propertyPath: m_Name
       value: UnitInfo
@@ -1830,13 +1839,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7838901011522644082, guid: 09d89e1dbb1b6cd4cb2dd542a2c41f9e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1436950956}
-    - targetCorrespondingSourceObject: {fileID: 7838901011522644082, guid: 09d89e1dbb1b6cd4cb2dd542a2c41f9e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1436950957}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 09d89e1dbb1b6cd4cb2dd542a2c41f9e, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
