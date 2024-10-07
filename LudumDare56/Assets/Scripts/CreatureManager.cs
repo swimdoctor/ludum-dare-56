@@ -11,9 +11,9 @@ public class CreatureManager : MonoBehaviour
 {
     public static CreatureManager instance;
 
-	public List<Creature> inventory = new List<Creature>();
-	public List<Creature> bestiary = new List<Creature>();
-	public List<Creature> party = new List<Creature>(new Creature[5]);
+	public static List<Creature> inventory = new List<Creature>();
+	public static List<Creature> bestiary = new List<Creature>();
+	public static List<Creature> party = new List<Creature>(new Creature[5]);
 	public Creature mergeA;
 	public Creature mergeB;
 	public Creature mergeAB;
@@ -70,11 +70,13 @@ public class CreatureManager : MonoBehaviour
 		{
 			mergeLocations[i] = OOBMenu.instance.merge.transform.GetChild(0).GetChild(i);
 		}
-		AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Plant));
-        AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Knight));
-        AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Steampunk));
-        AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Burger));
-
+		if(inventory.Count == 0)
+		{
+			AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Plant));
+			AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Knight));
+			AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Steampunk));
+			AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Burger));
+		}
 	}
 
 	//Player collects new creature
@@ -147,8 +149,15 @@ public class CreatureManager : MonoBehaviour
 			content.GetChild(i).GetChild(0).GetChild(3).GetComponent<SpriteRenderer>().sprite = inventory[i].rightArm;
 			content.GetChild(i).GetChild(0).GetChild(4).GetComponent<SpriteRenderer>().sprite = inventory[i].head;
 			content.GetChild(i).GetChild(0).GetChild(5).GetComponent<SpriteRenderer>().sprite = inventory[i].headAccessory;
-			SpriteSkinUtility.ResetBindPose(content.GetChild(i).GetChild(0).GetComponent<SpriteSkin>());
-			SpriteSkinUtility.ResetBindPose(content.GetChild(i).GetChild(0).GetChild(4).GetComponent<SpriteSkin>());
+			try
+			{
+				SpriteSkinUtility.ResetBindPose(content.GetChild(i).GetChild(0).GetComponent<SpriteSkin>());
+				SpriteSkinUtility.ResetBindPose(content.GetChild(i).GetChild(0).GetChild(4).GetComponent<SpriteSkin>());
+			}
+			catch(InvalidOperationException)
+			{
+				print("lol take that spriteSkin");
+			}
 		}
 
 		for(int i = inventory.Count; i < content.childCount; i++)
@@ -201,8 +210,15 @@ public class CreatureManager : MonoBehaviour
 			//for(int i = 0; i < 5; i++)
 			//	if(party[i] != null)
 			//		print(i + party[i].Name);
-			SpriteSkinUtility.ResetBindPose(partyLocations[index].GetChild(0).GetComponent<SpriteSkin>());
-			SpriteSkinUtility.ResetBindPose(partyLocations[index].GetChild(0).GetChild(4).GetComponent<SpriteSkin>());
+			try 
+			{ 
+				SpriteSkinUtility.ResetBindPose(partyLocations[index].GetChild(0).GetComponent<SpriteSkin>());
+				SpriteSkinUtility.ResetBindPose(partyLocations[index].GetChild(0).GetChild(4).GetComponent<SpriteSkin>());
+			}
+			catch(InvalidOperationException)
+			{
+				print("lol take that spriteSkin");
+			}
 		}
 	}
 
@@ -241,8 +257,15 @@ public class CreatureManager : MonoBehaviour
 			mergeLocations[index].GetChild(0).GetChild(3).GetComponent<SpriteRenderer>().sprite = creature.rightArm;
 			mergeLocations[index].GetChild(0).GetChild(4).GetComponent<SpriteRenderer>().sprite = creature.head;
 			mergeLocations[index].GetChild(0).GetChild(5).GetComponent<SpriteRenderer>().sprite = creature.headAccessory;
-			SpriteSkinUtility.ResetBindPose(mergeLocations[index].GetChild(0).GetComponent<SpriteSkin>());
-			SpriteSkinUtility.ResetBindPose(mergeLocations[index].GetChild(0).GetChild(4).GetComponent<SpriteSkin>());
+			try
+			{
+				SpriteSkinUtility.ResetBindPose(mergeLocations[index].GetChild(0).GetComponent<SpriteSkin>());
+				SpriteSkinUtility.ResetBindPose(mergeLocations[index].GetChild(0).GetChild(4).GetComponent<SpriteSkin>());
+			}
+			catch(InvalidOperationException)
+			{
+			print("lol take that spriteSkin");
+			}
 		}
 	}
 
@@ -309,9 +332,16 @@ public class CreatureManager : MonoBehaviour
 			partyStatsTorsoTransform.GetChild(0).GetChild(3).GetComponent<SpriteRenderer>().sprite = creature.rightArm;
 			partyStatsTorsoTransform.GetChild(0).GetChild(4).GetComponent<SpriteRenderer>().sprite = creature.head;
 			partyStatsTorsoTransform.GetChild(0).GetChild(5).GetComponent<SpriteRenderer>().sprite = creature.headAccessory;
-			SpriteSkinUtility.ResetBindPose(partyStatsTorsoTransform.GetChild(0).GetComponent<SpriteSkin>());
-			SpriteSkinUtility.ResetBindPose(partyStatsTorsoTransform.GetChild(0).GetChild(4).GetComponent<SpriteSkin>());
-		}
+			try
+			{
+				SpriteSkinUtility.ResetBindPose(partyStatsTorsoTransform.GetChild(0).GetComponent<SpriteSkin>());
+				SpriteSkinUtility.ResetBindPose(partyStatsTorsoTransform.GetChild(0).GetChild(4).GetComponent<SpriteSkin>());
+			}
+			catch(InvalidOperationException)
+			{
+				print("lol take that spriteSkin");
+			}
+		}	
 		
 
 		//Update Creature Stats ----------------------------------------------

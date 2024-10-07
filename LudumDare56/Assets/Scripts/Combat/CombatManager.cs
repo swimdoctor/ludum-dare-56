@@ -65,7 +65,7 @@ public class CombatManager : MonoBehaviour
         
         victoryFade = victoryUI.GetComponent<FadeInOut>();
 
-        List<Creature> team1 = CreatureManager.instance.party;
+        List<Creature> team1 = CreatureManager.party;
         List<Creature> team2 = Creature.GenerateTeam(7, maxSize: 3);
 
         SetupCombat(team1, team2);
