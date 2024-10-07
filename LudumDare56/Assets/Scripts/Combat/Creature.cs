@@ -219,7 +219,7 @@ public class Creature
         switch (i)
         {
             case BasicCreature.Burger:
-                return new Creature("Burger", new List<string>() { "Bur", "ger" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.Punch], .7f, .2f, .9f, .25f,
+                return new Creature("Burger", new List<string>() { "Bur", "ger" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.HealOrb], .7f, .2f, .9f, .25f,
                     getTraitsFromPool(new List<Traits>()
                     {
                         Traits.Juggernaut,
@@ -320,7 +320,7 @@ public class Creature
                     )
                 );
             case BasicCreature.Panda:
-                return new Creature("panda", new List<string>() { "Trash", "panda" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.Slam], .8f, .4f, .5f, .3f,
+                return new Creature("panda", new List<string>() { "Trash", "panda" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.HealOrb], .8f, .4f, .5f, .3f,
                     getTraitsFromPool(new List<Traits>()
                     {
                         Traits.Juggernaut,

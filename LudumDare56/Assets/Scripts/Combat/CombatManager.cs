@@ -261,6 +261,8 @@ public class CombatManager : MonoBehaviour
 
             startButton.gameObject.SetActive(false);
             surrenderButton.gameObject.SetActive(true);
+
+            creatureHover = -1;
         }
     }
 
