@@ -72,6 +72,8 @@ public class OOBMenu : MonoBehaviour
 				merge.SetActive(false);
 				inventory.SetActive(true);
 				stats.SetActive(true);
+
+				CreatureManager.instance.UpdateStats(null);
 				//Close other menus
 				break;
             case MenuState.Merge:
@@ -80,6 +82,9 @@ public class OOBMenu : MonoBehaviour
 				merge.SetActive(true);
 				inventory.SetActive(true);
 				stats.SetActive(true);
+
+				CreatureManager.instance.UpdateStats(null);
+                CreatureManager.instance.ClearMerge();
 				//Close other menus
 				break;
             case MenuState.Settings:
