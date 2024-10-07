@@ -84,6 +84,7 @@ public class UnitScript : MonoBehaviour
 
     private void OnDeath()
     {
+        currentHP = 0;
 
         foreach (Trait trait in stats.traitList)
         {
