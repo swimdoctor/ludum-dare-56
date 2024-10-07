@@ -16,11 +16,13 @@ public class FadeInOut : MonoBehaviour
         }
         canvasGroup.alpha = 0; // Start hidden
         canvasGroup.interactable = false;
+        canvasGroup.blocksRaycasts = false;
     }
 
     public void Show()
     {
         canvasGroup.interactable = true;
+        canvasGroup.blocksRaycasts = true;
         StartCoroutine(Fade(0, 1));
     }
 
@@ -43,5 +45,6 @@ public class FadeInOut : MonoBehaviour
         canvasGroup.alpha = endAlpha; // Ensure final alpha is set
 
         canvasGroup.interactable = (endAlpha > 0);
+        canvasGroup.blocksRaycasts = (endAlpha > 0);
     }
 }
