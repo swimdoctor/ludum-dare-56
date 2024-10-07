@@ -25,6 +25,8 @@ public class UnitScript : MonoBehaviour
 
     public bool team;
 
+    public bool isAlive;
+
     public float currentHP;
 
     public Creature stats;
@@ -59,6 +61,8 @@ public class UnitScript : MonoBehaviour
 
         currentTarget = null;
 
+        isAlive = true;
+
     }
 
     public void OnCombatStart()
@@ -86,9 +90,10 @@ public class UnitScript : MonoBehaviour
             trait.OnDie(this);
         }
 
-        gameObject.layer = 13;
+        gameObject.layer = 12;
         units.Remove(this);
-        Destroy(gameObject);
+
+        isAlive = false;
     }
 
     private void Update() 
@@ -109,9 +114,20 @@ public class UnitScript : MonoBehaviour
     private void FixedUpdate() {
         if (CombatManager.Instance.combatState == CombatManager.State.During)
         {
-            doDuringCombat();
+            if (isAlive)
+            {
+                doDuringCombat();
+            }
+
         }
-        
+        if (!isAlive)
+        {
+            Debug.Log("Am dead");
+            currentHP = 0;
+            rb.velocity = Vector3.zero;
+        }
+        limitVelocity();
+
     }
 
     private void doDuringCombat()
@@ -166,7 +182,6 @@ public class UnitScript : MonoBehaviour
             }
         }
 
-        limitVelocity();
     }
 
     private void limitVelocity()

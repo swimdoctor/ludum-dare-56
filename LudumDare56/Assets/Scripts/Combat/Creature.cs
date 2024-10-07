@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.UIElements;
 using static Trait;
@@ -22,7 +24,7 @@ public class Creature
     }
 
     // Let's not use this list anymore, refer to GetBasicCreature() and use the enums
-	/*public static List<Creature> basicCreatureDict = new List<Creature>()//We need better names lmao
+    /*public static List<Creature> basicCreatureDict = new List<Creature>()//We need better names lmao
     {
 		new Creature("Burger", new List<string>(){"Bur", "ger"}, BasicAttack.basicAttacksList[0], .7f, .2f, .9f, .25f),
 		new Creature("Steampunk", new List<string>(){"Steam", "punk"}, BasicAttack.basicAttacksList[0], .7f, .2f, .9f, .25f),
@@ -102,24 +104,98 @@ public class Creature
         backAccessory = Resources.Load<Sprite>(spriteName + "_BackAccessory") ;
     }
 
-    private float getLevelModifier()
+    public string Name
+    {
+        get
+        {
+            string str = "";
+            foreach (string s in name)
+            {
+                str += s;
+            }
+            return str;
+        }
+    }
+
+    public string getStatsString()
+    {
+        return 
+            $"{(attackPowerStat * 100f).ToString("0")} ({getAttackPower().ToString("0.00")}x)\n"+
+            $"{(attackSpeedStat * 100f).ToString("0")} ({getAttackSpeed().ToString("0.00")}x)\n"+
+            $"{(healthStat * 100f).ToString("0")} ({getMaxHealth().ToString("0")} HP)\n"+
+            $"{(moveSpeedStat * 100f).ToString("0")}\n"
+            ;
+    }
+
+    public string getTraitsString()
+    {
+        string value = "";
+        foreach (Trait t in traitList)
+        {
+            value += t.name + ": " + t.GetDescription() + "\n";
+        }
+        return value;
+    }
+
+    public string getLevelString()
+    {
+        string value;
+        switch (mergeLevel)
+        {
+            case 0:
+                value = "Tier 1: Plain";
+                break;
+            case 1:
+                value = "Tier 2: Weird";
+                break;
+            case 2:
+                value = "Tier 3: Freaky";
+                break;
+            case 3:
+                value = "Tier 4: Grotesque";
+                break;
+            default:
+                value = "Tier 0";
+                break;
+        }
+        return value;
+    }
+
+    public float getLevelModifier()
     {
         return (mergeLevel * 0.5f) + 1f;
     }
 
     public void getBattleStats()
     {
-        float attackPower = (attackPowerStat * 1f + 0.5f) * getLevelModifier();
+        float attackPower = getAttackPower();
         meleeAttackPower = attackPower;
         rangedAttackPower = attackPower;
 
-        float attackSpeed = (attackSpeedStat * 1f + 0.5f) * getLevelModifier();
+        float attackSpeed = getAttackSpeed();
         meleeAttackSpeed = attackSpeed;
         rangedAttackSpeed = attackSpeed;
 
 
-        moveSpeed = (moveSpeedStat * 1.5f + 0.5f);
-        maxHealth = (healthStat * 100f + 75f) * getLevelModifier();
+        moveSpeed = getMoveSpeed();
+        maxHealth = getMaxHealth();
+    }
+
+    private float getAttackPower()
+    {
+        return (attackPowerStat * 1f + 0.5f) * getLevelModifier();
+    }
+    private float getAttackSpeed()
+    {
+        return (attackSpeedStat * 1f + 0.5f) * getLevelModifier();
+    }
+    private float getMoveSpeed()
+    {
+        return (moveSpeedStat * 1.5f + 0.5f);
+    }
+    private float getMaxHealth()
+    {
+        return (healthStat * 100f + 75f) * getLevelModifier();
     }
 
     public static List<Trait> getTraitsFromPool(List<Traits> pool, int num = 2) { 
@@ -260,8 +336,10 @@ public class Creature
                 return null;
 
         }
-    }
 
+
+
+    }
 
     public static List<Creature> GenerateTeam(int difficulty, int maxSize = 5)
     {
@@ -341,10 +419,11 @@ public class Creature
 
         foreach (Trait t in A.traitList)
         {
-            if (!takefromlist.Contains(t))
-            {
-                takefromlist.Add(t);
-            }
+            takefromlist.Add(t);
+        }
+        foreach (Trait t in B.traitList)
+        {
+            takefromlist.Add(t);
         }
 
         for (int i = 0; i < maxTraitCount; i++)

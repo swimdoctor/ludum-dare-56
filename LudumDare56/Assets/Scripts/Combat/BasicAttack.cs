@@ -59,7 +59,7 @@ public class BasicAttack
     {
         
 
-        return $"Deals {NumString(minDamage)}-{NumString(maxDamage)} base {meleeOrRanged()} damage";
+        return $"Deals {NumString(minDamage)}-{NumString(maxDamage)} base {meleeOrRanged()} damage.";
     }
 
     public float calcDamage(UnitScript sourceUnit, bool melee = false, bool ranged = false)
@@ -138,6 +138,8 @@ public class Punch : BasicAttack
         maxDamage = 22f;
 
         knockBackAmount = 3f;
+
+        isMelee = true;
     }
     
 }
@@ -156,6 +158,8 @@ public class Slam : BasicAttack
         maxDamage = 44f;
 
         knockBackAmount = 5f;
+
+        isMelee = true;
     }
 
 }
@@ -175,6 +179,8 @@ public class LeafAttack : BasicAttack
         maxDamage = 12f;
 
         knockBackAmount = 0.5f;
+
+        isRanged = true;
     }
     public override void Activate(UnitScript attacker, UnitScript target)
     {
@@ -185,7 +191,7 @@ public class LeafAttack : BasicAttack
     }
     public override string getDescription()
     {
-        return $"Fires a volley of {num_projectiles} leaves, each dealing {NumString(minDamage)}-{NumString(maxDamage)} base {meleeOrRanged()} damage";
+        return $"Fires a volley of {num_projectiles} leaves, each dealing {NumString(minDamage)}-{NumString(maxDamage)} base {meleeOrRanged()} damage.";
     }
 }
 
@@ -203,6 +209,8 @@ public class MagicAttack : BasicAttack
         maxDamage = 18f;
 
         knockBackAmount = 1.5f;
+
+        isRanged = true;
     }
     public override void Activate(UnitScript attacker, UnitScript target)
     {
@@ -210,7 +218,7 @@ public class MagicAttack : BasicAttack
     }
     public override string getDescription()
     {
-        return $"Fires a seeking projectile that deals {NumString(minDamage)}-{NumString(maxDamage)} base {meleeOrRanged()} damage";
+        return $"Fires a seeking projectile that deals {NumString(minDamage)}-{NumString(maxDamage)} base {meleeOrRanged()} damage.";
     }
 }
 
@@ -228,6 +236,8 @@ public class FlameThrowerAttack : BasicAttack
         maxDamage = 1.6f;
 
         knockBackAmount = 0.05f;
+
+        isRanged = true;
     }
     public override void Activate(UnitScript attacker, UnitScript target)
     {
@@ -236,7 +246,7 @@ public class FlameThrowerAttack : BasicAttack
     }
     public override string getDescription()
     {
-        return $"Fires a constant stream of flames, each dealing {NumString(minDamage)}-{NumString(maxDamage)} base {meleeOrRanged()} damage";
+        return $"Fires a constant stream of flames, each dealing {NumString(minDamage)}-{NumString(maxDamage)} base {meleeOrRanged()} damage.";
     }
 }
 
@@ -264,6 +274,6 @@ public class HealOrb : BasicAttack
     }
     public override string getDescription()
     {
-        return $"Fires a healing orb that restores {NumString(-minDamage)}-{NumString(-maxDamage)} health to allies";
+        return $"Fires a healing orb that restores {NumString(-minDamage)}-{NumString(-maxDamage)} health to allies.";
     }
 }

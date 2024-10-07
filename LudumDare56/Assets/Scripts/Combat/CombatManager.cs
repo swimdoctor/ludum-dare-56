@@ -10,6 +10,8 @@ public class CombatManager : MonoBehaviour
 
     public Button startButton;
 
+    public Creature reward;
+
     public enum State
     {
         Before,
@@ -138,9 +140,14 @@ public class CombatManager : MonoBehaviour
             listUnits.Add(unit);
         }
 
+        reward = enemyTeam[0];
+
         UnitScript.units = listUnits;
 
         startButton.gameObject.SetActive(true);
+
+        UnitInfoScript.Instance.UpdateInfo(reward);
+        UnitInfoScript.Instance.enabled = true;
     }
 
     public void StartCombat()

@@ -187,7 +187,7 @@ class GlassCannon : Trait
     {
            name = "Glass Cannon";
     }
-    private float positiveModifier = 1.5f;
+    private float positiveModifier = 1.75f;
     private float negativeModifier = 0.5f;
     public override string GetDescription()
     {
