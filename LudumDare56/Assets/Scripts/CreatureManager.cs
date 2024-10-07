@@ -13,9 +13,11 @@ public class CreatureManager : MonoBehaviour
 	public List<Creature> inventory = new List<Creature>();
 	public List<Creature> bestiary = new List<Creature>();
 	public List<Creature> party = new List<Creature>(new Creature[5]);
+	public Creature mergeA;
+	public Creature mergeB;
+	public Creature mergeAB;
 
 	public GameObject creaturePrefab;
-	public GameObject partyMenu;
 
 	[SerializeField] Sprite Kick;
 	public Sprite Add;
@@ -28,21 +30,19 @@ public class CreatureManager : MonoBehaviour
 	private void OnEnable()
 	{
 		instance = this; 
-		for(int i = 0; i < 5; i++)
-		{
-			partyLocations[i] = partyMenu.transform.GetChild(1).GetChild(i);
-		}
 	}
 
 	// Start is called before the first frame update
 	void Start()
     {
+		for(int i = 0; i < 5; i++)
+		{
+			partyLocations[i] = OOBMenu.instance.party.transform.GetChild(0).GetChild(i);
+		}
 		AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Plant));
         AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Knight));
         AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Steampunk));
         AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Burger));
-
-
     }
 
 	//Player collects new creature
@@ -62,7 +62,7 @@ public class CreatureManager : MonoBehaviour
 		}
 
 		//Update InventoryMenuObject size
-		Transform content = partyMenu.transform.GetChild(2).GetChild(0).GetChild(0);
+		Transform content = OOBMenu.instance.inventory.transform.GetChild(0).GetChild(0);
 		content.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, inventory.Count * 50);
 		while(content.childCount < inventory.Count)
 		{
@@ -85,9 +85,28 @@ public class CreatureManager : MonoBehaviour
 		}
 	}
 
+	//Player loses a creature due to merging
+	public void RemoveCreature(Creature creature)
+	{
+		bestiary.Remove(creature);
+		inventory.Remove(creature);
+		for(int i = 0; i < 5; i++)
+		{
+			if(party[i] == creature)
+			{
+				party[i] = null;
+			}
+		}
+
+		//Update InventoryMenuObject size
+		Transform content = OOBMenu.instance.inventory.transform.GetChild(0).GetChild(0);
+		content.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, inventory.Count * 50);
+		UpdateInventorySprites();
+	}
+
 	public void UpdateInventorySprites()
 	{
-		Transform content = partyMenu.transform.GetChild(2).GetChild(0).GetChild(0);
+		Transform content = OOBMenu.instance.inventory.transform.GetChild(0).GetChild(0);
 		for(int i = 0; i < Math.Min(inventory.Count, content.childCount); i++)
 		{
 			content.GetChild(i).GetChild(0).GetComponent<SpriteRenderer>().sprite = inventory[i].torso;
@@ -122,7 +141,7 @@ public class CreatureManager : MonoBehaviour
 
 		if(partyLocations[index].childCount == 0)
 			Instantiate(creaturePrefab, partyLocations[index]).transform.localScale = new Vector3(10, 10, 1);
-
+		UpdatePartyStats(creature);
 		//Update Sprites
 		if(creature == null)
 		{
@@ -146,10 +165,6 @@ public class CreatureManager : MonoBehaviour
 			SpriteSkinUtility.ResetBindPose(partyLocations[index].GetChild(0).GetComponent<SpriteSkin>());
 			SpriteSkinUtility.ResetBindPose(partyLocations[index].GetChild(0).GetChild(4).GetComponent<SpriteSkin>());
 		}
-		
-
-		//Rebind Poses
-		
 	}
 
 	public void SelectParty(int index)
@@ -160,7 +175,6 @@ public class CreatureManager : MonoBehaviour
 	}
 	public void SelectInventory(int index)
 	{
-		print(index);
 		partySelected = false;
 		selectedIndex = index;
 		UpdatePartyStats(inventory[index]);
@@ -168,7 +182,7 @@ public class CreatureManager : MonoBehaviour
 
 	public void UpdatePartyStats(Creature creature)
 	{
-		Transform partyStatsTorsoTransform = partyMenu.transform.GetChild(0).GetChild(0);
+		Transform partyStatsTorsoTransform = OOBMenu.instance.stats.transform.GetChild(0);
 		//Update Creature Icon
 		if(partyStatsTorsoTransform.childCount == 0)
 		{
@@ -199,26 +213,74 @@ public class CreatureManager : MonoBehaviour
 		}
 		
 
-		//Update Creature Stats
+		//Update Creature Stats ----------------------------------------------
 
 		//Update Add/Kick Button
 		if(party.Contains(creature))
-			partyMenu.transform.GetChild(0).GetChild(1).GetComponent<Image>().sprite = Kick;
+			OOBMenu.instance.stats.transform.GetChild(1).GetComponent<Image>().sprite = Kick;
 		else
-			partyMenu.transform.GetChild(0).GetChild(1).GetComponent<Image>().sprite = Add;
+			OOBMenu.instance.stats.transform.GetChild(1).GetComponent<Image>().sprite = Add;
 
 	}
 
-	public void PressAddKick()
+	public void PressAddKickMerge()
 	{
 		if(selectedIndex < 0)
 			return;
 
-		if(partySelected && selectedIndex < 5)
+		if(OOBMenu.instance.menuState == OOBMenu.MenuState.Party)
 		{
-			UpdateParty(null, selectedIndex);
-			UpdatePartyStats(null);
-			selectedIndex = -1;
+			if(partySelected && selectedIndex < 5)
+			{
+				UpdateParty(null, selectedIndex);
+				selectedIndex = -1;
+			}
+			else if(!partySelected && selectedIndex < inventory.Count)
+			{
+				if(!party.Contains(inventory[selectedIndex])){
+					for(int i = 0; i < 5; i++)
+					{
+						if(party[i] == null)
+						{
+							UpdateParty(inventory[selectedIndex], i);
+							break;
+						}
+					}
+				}
+				else
+				{
+					UpdateParty(null, party.IndexOf(inventory[selectedIndex]));
+				}
+			}
+		}
+		else if(OOBMenu.instance.menuState == OOBMenu.MenuState.Merge)
+		{
+			if(partySelected)
+			{
+				if(selectedIndex < 2)
+				{
+					//Clicked On While Selecting A or B
+				}
+				if(selectedIndex == 2)
+				{
+					//Clicked On While Selecting AB
+				}
+			}
+			else if(!partySelected && selectedIndex < inventory.Count)
+			{
+				Creature creature = inventory[selectedIndex];
+				if(creature != mergeA && creature != mergeB)
+				{
+					if(mergeA == null)
+						mergeA = creature;
+					else if(mergeB == null)
+						mergeB = creature;
+				}
+				else
+				{
+					//Clicked on while selecting inventory, in merge
+				}
+			}
 		}
 	}
 }
