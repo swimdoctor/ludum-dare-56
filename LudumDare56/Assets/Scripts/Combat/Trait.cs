@@ -1,15 +1,55 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.UI.CanvasScaler;
  
-public class Trait : MonoBehaviour
+public class Trait
 {
+    public enum Traits
+    {
+        Healthy,
+        Agile,
+        Lifesteal,
+        meleeFireProjectile,
+        GlassCannon,
+        FastTwitchMuscle,
+        SlowTwitchMuscle,
+        Noticable,
+        Ranger,
+        Brawler,
+        Pushy,
+        Juggernaut,
+        FarSighted,
+        Vampiric,
+        Thorns,
+        Strength,
+        Haste,
+    }
+
     public static List<Trait> traitsList = new List<Trait>()
     {
         new Healthy(),
+        new Agile(),
+        new LifeSteal(),
+        new meleeFireProjectile(),
+        new GlassCannon(),
+        new FastTwitchMuscle(),
+        new SlowTwitchMuscle(),
+        new Noticable(),
+        new Ranger(),
+        new Brawler(),
+        new Pushy(),
+        new Juggernaut(),
+        new FarSighted(),
+        new Vampiric(),
+        new Thorns(),
+        new Strength(),
+        new Haste(),
     };
+
+    
 
 
     public string name = "placeholder name";
@@ -34,12 +74,12 @@ public class Trait : MonoBehaviour
         // Called when the battle begins
     }
 
-    public virtual void OnAttack(UnitScript unit, UnitScript target, bool melee)
+    public virtual void OnAttack(UnitScript unit, UnitScript target, float damage, bool melee)
     {
         // Called after the unit attacks
     }
 
-    public virtual void OnMeleeAttacked(UnitScript unit, UnitScript attacker)
+    public virtual void OnMeleeAttacked(UnitScript unit, UnitScript attacker, float damage)
     {
         // Called after the unit is targeted by a melee attack
     }
@@ -80,7 +120,6 @@ class Healthy : Trait
         unit.stats.maxHealth *= modifier;
     }
 }
-
 class LifeSteal : Trait
 {
     public LifeSteal()
@@ -95,7 +134,7 @@ class LifeSteal : Trait
         return ($"On melee attack, heal for {NumString(modifier*100)}% of the enemy's current health");
     }
 
-    public override void OnAttack(UnitScript unit, UnitScript target, bool melee)
+    public override void OnAttack(UnitScript unit, UnitScript target, float damage, bool melee)
     {
         if (melee)
         {
@@ -110,7 +149,7 @@ class meleeFireProjectile : Trait
     {
         name = "Energy Slash";
     }
-    private float percentChance = 0.15f;
+    private float percentChance = 0.25f;
     
     public override string GetDescription()
     {
@@ -126,7 +165,7 @@ class meleeFireProjectile : Trait
         dir = new Vector2(Mathf.Cos(radians), Mathf.Sin(radians));
         return dir;
     }
-    public override void OnAttack(UnitScript unit, UnitScript target, bool melee)
+    public override void OnAttack(UnitScript unit, UnitScript target, float damage, bool melee)
     {
         float randomChance = Random.value;
        
@@ -157,7 +196,8 @@ class GlassCannon : Trait
     public new void ModifyStats(UnitScript unit)
     {
         unit.stats.maxHealth *= negativeModifier;
-        unit.stats.attackSpeedStat *= positiveModifier;
+        unit.stats.meleeAttackSpeed *= positiveModifier;
+        unit.stats.rangedAttackSpeed *= positiveModifier;
         unit.stats.meleeAttackPower *= positiveModifier;
         unit.stats.rangedAttackPower *= positiveModifier;
     }
@@ -183,7 +223,7 @@ class FastTwitchMuscle : Trait
     }
     public override void OnBattleStart(UnitScript unit)
     {
-        StartCoroutine(Reduce(unit));
+        CombatManager.StartCoroutineUsingManager(Reduce(unit));
         
     }
     private IEnumerator Reduce(UnitScript unit)
@@ -196,7 +236,6 @@ class FastTwitchMuscle : Trait
         }
     }
 }
-
 class SlowTwitchMuscle : Trait
 {
     public SlowTwitchMuscle()
@@ -218,7 +257,7 @@ class SlowTwitchMuscle : Trait
     }
     public override void OnBattleStart(UnitScript unit)
     {
-        StartCoroutine(Increase(unit));
+        CombatManager.StartCoroutineUsingManager(Increase(unit));
 
     }
     private IEnumerator Increase(UnitScript unit)
@@ -232,7 +271,6 @@ class SlowTwitchMuscle : Trait
     }
 
 }
-
 class Noticable : Trait
 {
 
@@ -251,8 +289,205 @@ class Noticable : Trait
         unit.stats.aggro += modifier;
     }
 }
+class Agile : Trait
+{
+    public Agile()
+    {
+        name = "Agile";
+    }
 
-class ExplodeOnDeath : Trait
+    private float modifier = 1.5f;
+
+    public override string GetDescription()
+    {
+        return ($"Increases move speed by {NumString(modifier)}x.");
+    }
+
+    public override void ModifyStats(UnitScript unit)
+    {
+        unit.stats.moveSpeed *= modifier;
+    }
+}
+class Ranger : Trait
+{
+    public Ranger()
+    {
+        name = "Ranger";
+    }
+
+    private float modifier = 1.25f;
+
+    public override string GetDescription()
+    {
+        return ($"Increases ranged damage and attack speed by {NumString(modifier)}x.");
+    }
+
+    public override void ModifyStats(UnitScript unit)
+    {
+        unit.stats.rangedAttackPower *= modifier;
+        unit.stats.rangedAttackSpeed *= modifier;
+    }
+}
+class Brawler : Trait
+{
+    public Brawler()
+    {
+        name = "Brawler";
+    }
+
+    private float modifier = 1.25f;
+
+    public override string GetDescription()
+    {
+        return ($"Increases melee damage and attack speed by {NumString(modifier)}x.");
+    }
+
+    public override void ModifyStats(UnitScript unit)
+    {
+        unit.stats.meleeAttackPower *= modifier;
+        unit.stats.meleeAttackSpeed *= modifier;
+    }
+}
+class Pushy : Trait
+{
+    public Pushy()
+    {
+        name = "Pushy";
+    }
+
+    private float modifier = 2f;
+
+    public override string GetDescription()
+    {
+        return ($"Increases knockback dealt by {NumString(modifier)}x.");
+    }
+
+    public override void ModifyStats(UnitScript unit)
+    {
+        unit.stats.knockbackOutgoing *= modifier;
+    }
+}
+class Juggernaut : Trait
+{
+    public Juggernaut()
+    {
+        name = "Juggernaut";
+    }
+
+    public override string GetDescription()
+    {
+        return ($"Takes no knockback.");
+    }
+
+    public override void ModifyStats(UnitScript unit)
+    {
+        unit.stats.knockbackIncoming = 0;
+    }
+}
+class FarSighted : Trait
+{
+    public FarSighted()
+    {
+        name = "Far Sighted";
+    }
+
+    private float modifier = 1.5f;
+
+    public override string GetDescription()
+    {
+        return ($"Increases attack radius by {NumString(modifier)}x.");
+    }
+
+    public override void ModifyStats(UnitScript unit)
+    {
+        unit.stats.rangeModifier *= modifier;
+    }
+}
+class Vampiric : Trait
+{
+    public Vampiric()
+    {
+        name = "Vampiric";
+    }
+
+    private float modifier = 0.3f;
+
+    public override string GetDescription()
+    {
+        return ($"On melee attack, heal for {NumString(modifier * 100)}% of damage dealt");
+    }
+
+    public override void OnAttack(UnitScript unit, UnitScript target, float damage, bool melee)
+    {
+        if (melee)
+        {
+            unit.ChangeHP(modifier * damage, unit);
+        }
+
+    }
+}
+class Thorns : Trait
+{
+    public Thorns()
+    {
+        name = "Thorns";
+    }
+
+    private float modifier = 0.3f;
+
+    public override string GetDescription()
+    {
+        return ($"Deals {NumString(modifier * 100)}% of melee damage taken to the attacker");
+    }
+
+    public override void OnMeleeAttacked(UnitScript unit, UnitScript attacker, float damage)
+    {
+        attacker.ChangeHP(-modifier * damage, unit);
+    }
+}
+class Strength : Trait
+{
+    public Strength()
+    {
+        name = "Strength";
+    }
+
+    private float modifier = 1.2f;
+
+    public override string GetDescription()
+    {
+        return ($"Increases damage dealt by {NumString(modifier)}x");
+    }
+
+    public override void ModifyStats(UnitScript unit)
+    {
+        unit.stats.meleeAttackPower *= modifier;
+        unit.stats.rangedAttackPower *= modifier;
+    }
+}
+class Haste : Trait
+{
+    public Haste()
+    {
+        name = "Haste";
+    }
+
+    private float modifier = 1.2f;
+
+    public override string GetDescription()
+    {
+        return ($"Increases attack speed by {NumString(modifier)}x");
+    }
+
+    public override void ModifyStats(UnitScript unit)
+    {
+        unit.stats.meleeAttackSpeed *= modifier;
+        unit.stats.rangedAttackSpeed *= modifier;
+    }
+}
+
+// TODO: fix this
+/*class ExplodeOnDeath : Trait
 {
     public ExplodeOnDeath() {
         name = "Kamikaze";
@@ -271,4 +506,4 @@ class ExplodeOnDeath : Trait
         hitbox.ChangeHP(-damage, unit);
 
     }
-}
+}*/

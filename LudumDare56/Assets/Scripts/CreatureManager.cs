@@ -14,6 +14,9 @@ public class CreatureManager : MonoBehaviour
 	public GameObject creaturePrefab;
 	public GameObject partyMenuCreatures;
 
+	[SerializeField] Sprite Kick;
+	public Sprite Add;
+
 	Transform[] partyLocations = new Transform[5];
 
 	private void OnEnable()
@@ -28,10 +31,10 @@ public class CreatureManager : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
     {
-		AddCreature(Creature.creatureDict[0]);
-		AddCreature(Creature.creatureDict[1]);
-		AddCreature(Creature.creatureDict[2]);
-		AddCreature(Creature.creatureDict[3]);
+		AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Plant));
+        AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Knight));
+        AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Steampunk));
+        AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Burger));
     }
 
 	//Player collects new creature

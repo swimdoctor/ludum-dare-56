@@ -6,6 +6,14 @@ using UnityEngine;
 
 public class BasicAttack
 {
+    public enum Attacks
+    {
+        Punch,
+        LeafAttack,
+        MagicAttack,
+        FlameThrowerAttack,
+        HealOrb
+    }
 
     public static List<BasicAttack> basicAttacksList = new List<BasicAttack>()
     {
@@ -74,22 +82,22 @@ public class BasicAttack
         float damage = calcDamage(attacker, melee: true);
         target.ChangeHP(-damage, attacker);
 
-        target.TakeKnockBack(knockBackAmount, attacker.transform.position);
-        TriggerAttackTraits(attacker, target, melee: true);
+        target.TakeKnockBack(knockBackAmount, attacker.transform.position, attacker);
+        TriggerAttackTraits(attacker, target, damage, melee: true);
 
     }
 
-    private void TriggerAttackTraits(UnitScript attacker, UnitScript target, bool melee = true)
+    private void TriggerAttackTraits(UnitScript attacker, UnitScript target, float damage, bool melee = true)
     {
         foreach (Trait trait in attacker.stats.traitList)
         {
-            trait.OnAttack(attacker, target, melee);
+            trait.OnAttack(attacker, target, damage, melee:true);
         }
         if (melee)
         {
             foreach (Trait trait in target.stats.traitList)
             {
-                trait.OnMeleeAttacked(target, attacker);
+                trait.OnMeleeAttacked(target, attacker, damage);
             }
         }
 

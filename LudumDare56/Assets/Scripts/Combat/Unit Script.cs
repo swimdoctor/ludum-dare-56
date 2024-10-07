@@ -134,7 +134,7 @@ public class UnitScript : MonoBehaviour
             }
 
             float distToTarget = Vector2.Distance(transform.position, currentTarget.transform.position);
-            if (distToTarget > primaryAttack.range)
+            if (distToTarget > primaryAttack.range * stats.rangeModifier)
             {   // Move towards target
                 Vector2 direction = (currentTarget.transform.position - transform.position).normalized;
                 rb.AddForce(direction * stats.moveSpeed * 5, ForceMode2D.Force);
@@ -161,7 +161,7 @@ public class UnitScript : MonoBehaviour
                     {
                         cooldownMod = stats.meleeAttackSpeed;
                     }
-                    primaryAttackCooldown = primaryAttack.maxcooldown * cooldownMod;
+                    primaryAttackCooldown = primaryAttack.maxcooldown / cooldownMod;
                 }
             }
         }
@@ -264,10 +264,14 @@ public class UnitScript : MonoBehaviour
         return false;
     }
 
-    public void TakeKnockBack(float amount, Vector2 source)
+    public void TakeKnockBack(float amount, Vector2 sourcePosition, UnitScript sourceUnit)
     {
         Vector2 pos = transform.position;
-        Vector2 direction = (pos - source).normalized;
+        Vector2 direction = (pos - sourcePosition).normalized;
+
+        amount *= sourceUnit.stats.knockbackOutgoing;
+        amount *= stats.knockbackIncoming;
+
         rb.AddForce(direction * amount, ForceMode2D.Impulse);
     }
     public void FireProjectile(UnitScript source, BasicAttack attack, GameObject type, Vector2 direction, UnitScript target, bool targetAlly = false)
