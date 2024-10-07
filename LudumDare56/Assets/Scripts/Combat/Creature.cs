@@ -377,4 +377,14 @@ public class Creature
 
         return passedDownStat;
     }
+
+    public bool Equals(Creature other)
+    {
+        return  other.name == name && 
+		        other.primaryAttack == primaryAttack &&
+		        other.attackPowerStat == attackPowerStat &&
+		        other.attackSpeedStat == attackSpeedStat &&
+		        other.healthStat == healthStat &&
+                other.moveSpeedStat == moveSpeedStat;
+    }
 }
