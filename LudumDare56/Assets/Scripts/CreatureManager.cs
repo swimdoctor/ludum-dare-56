@@ -20,8 +20,11 @@ public class CreatureManager : MonoBehaviour
 
 	public GameObject creaturePrefab;
 
-	[SerializeField] Sprite Kick;
-	public Sprite Add;
+	public Sprite KickParty;
+	public Sprite AddParty;
+	public Sprite KickMerge;
+	public Sprite AddMerge;
+
 
 	Transform[] partyLocations = new Transform[5];
 	Transform[] mergeLocations = new Transform[3];
@@ -341,16 +344,26 @@ public class CreatureManager : MonoBehaviour
 			{
 				print("lol take that spriteSkin");
 			}
-		}	
-		
+		}
+
 
 		//Update Creature Stats ----------------------------------------------
 
 		//Update Add/Kick Button
-		if(party.Contains(creature))
-			OOBMenu.instance.stats.transform.GetChild(1).GetComponent<Image>().sprite = Kick;
+		if(OOBMenu.instance.menuState == OOBMenu.MenuState.Party)
+		{
+			if(party.Contains(creature))
+				OOBMenu.instance.stats.transform.GetChild(1).GetComponent<Image>().sprite = KickParty;
+			else
+				OOBMenu.instance.stats.transform.GetChild(1).GetComponent<Image>().sprite = AddParty;
+		}
 		else
-			OOBMenu.instance.stats.transform.GetChild(1).GetComponent<Image>().sprite = Add;
+		{
+			if(mergeA == creature || mergeB == creature)
+				OOBMenu.instance.stats.transform.GetChild(1).GetComponent<Image>().sprite = KickMerge;
+			else
+				OOBMenu.instance.stats.transform.GetChild(1).GetComponent<Image>().sprite = AddMerge;
+		}
 
 	}
 
