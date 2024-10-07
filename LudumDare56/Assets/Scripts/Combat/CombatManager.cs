@@ -10,6 +10,13 @@ public class CombatManager : MonoBehaviour
 
     public Button startButton;
 
+    public GameObject unitInfoPanel;
+    private UnitInfoScript unitInfo;
+    private FadeInOut unitInfoFade;
+
+    public GameObject victoryUI;
+    private FadeInOut victoryFade;
+
     public Creature reward;
 
     public enum State
@@ -48,6 +55,10 @@ public class CombatManager : MonoBehaviour
             Destroy(gameObject);
         }
 
+        unitInfo = unitInfoPanel.GetComponent<UnitInfoScript>();
+        unitInfoFade = unitInfo.GetComponent<FadeInOut>();
+        victoryFade = victoryUI.GetComponent<FadeInOut>();
+
         List<Creature> team1 = GetTestTeam();
         List<Creature> team2 = Creature.GenerateTeam(7, maxSize: 3);
 
@@ -75,6 +86,7 @@ public class CombatManager : MonoBehaviour
         {
             EndGame();
             // TODO: Lose
+            
 
         }
         else if (enemyCount == 0)
@@ -90,6 +102,11 @@ public class CombatManager : MonoBehaviour
         if (combatState == State.During)
         {
             combatState = State.After;
+
+            unitInfo.UpdateInfo(reward);
+            unitInfoFade.Show();
+            
+            victoryFade.Show();
         }
     }
 
@@ -146,8 +163,7 @@ public class CombatManager : MonoBehaviour
 
         startButton.gameObject.SetActive(true);
 
-        UnitInfoScript.Instance.UpdateInfo(reward);
-        UnitInfoScript.Instance.enabled = true;
+        
     }
 
     public void StartCombat()
