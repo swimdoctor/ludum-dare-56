@@ -65,9 +65,13 @@ public class PlayerMovement : MonoBehaviour
             movement.y = inputMovement.y*moveSpeed;
         }
 
-        movement *= Time.deltaTime;
+		GetComponent<Animator>().SetFloat("IsWalking", inputMovement.magnitude);
 
-        rigidbody.MovePosition(rigidbody.position+movement);
+		movement *= Time.deltaTime;
+
+		
+
+		rigidbody.MovePosition(rigidbody.position+movement);
         playerPos = transform.position;
     }
 
@@ -79,7 +83,8 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        if (Mathf.Abs(inputMovement.x) > Mathf.Abs(inputMovement.y))
+		GetComponent<Animator>().SetInteger("Direction", (int)direction);
+		if (Mathf.Abs(inputMovement.x) > Mathf.Abs(inputMovement.y))
         {
             if (inputMovement.x > 0)
             {
