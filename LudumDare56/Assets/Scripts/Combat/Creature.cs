@@ -264,7 +264,7 @@ public class Creature
                     )
                 );
             case BasicCreature.Candle:
-                return new Creature("Knight", new List<string>() { "Candle", "flame" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.FlameThrowerAttack], .9f, .9f, .1f, .05f,
+                return new Creature("candle", new List<string>() { "Candle", "flame" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.FlameThrowerAttack], .9f, .9f, .1f, .05f,
                     getTraitsFromPool(new List<Traits>()
                     {
                         Traits.GlassCannon,
@@ -296,7 +296,7 @@ public class Creature
                     )
                 );
             case BasicCreature.SwirlyDragon:
-                return new Creature("Knight", new List<string>() { "Swirly", "dragon" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.MagicAttack], .35f, .8f, .3f, .1f,
+                return new Creature("GhostDragon", new List<string>() { "Swirly", "dragon" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.MagicAttack], .35f, .8f, .3f, .1f,
                     getTraitsFromPool(new List<Traits>()
                     {
                         Traits.Juggernaut,
@@ -307,7 +307,7 @@ public class Creature
                     )
                 );
             case BasicCreature.Cardboard:
-                return new Creature("Knight", new List<string>() { "Card", "board" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.Punch], .5f, .5f, .5f, .5f,
+                return new Creature("Box", new List<string>() { "Card", "board" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.Punch], .5f, .5f, .5f, .5f,
                     getTraitsFromPool(new List<Traits>()
                     {
                         Traits.Pushy,
@@ -320,7 +320,7 @@ public class Creature
                     )
                 );
             case BasicCreature.Panda:
-                return new Creature("Knight", new List<string>() { "Trash", "panda" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.Slam], .8f, .4f, .5f, .3f,
+                return new Creature("panda", new List<string>() { "Trash", "panda" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.Slam], .8f, .4f, .5f, .3f,
                     getTraitsFromPool(new List<Traits>()
                     {
                         Traits.Juggernaut,
@@ -391,7 +391,7 @@ public class Creature
 
     public static Creature Merge(Creature A, Creature B)
     {
-        Creature AB = new Creature();
+        Creature AB = GetBasicCreature(0);
 
         AB.name = new List<string>();
         AB.name.AddRange(A.name);
