@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/WorldScenes/SwampScene.unity
     guid: 79f9c808b71cd0643ab07e31d0c600d8
   - enabled: 1
-    path: Assets/Scenes/Main.unity
+    path: Assets/Scenes/Combat.unity
     guid: 9c8f304b2c9d5704aae8ada24c530c89
   - enabled: 1
     path: Assets/Scenes/WorldScenes/TitleScene.unity
