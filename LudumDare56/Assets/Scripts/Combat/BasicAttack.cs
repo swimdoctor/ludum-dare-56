@@ -130,7 +130,7 @@ public class Punch : BasicAttack
     {
         name = "Punch";
 
-        range = 1.5f;
+        range = 2f;
 
         maxcooldown = 0.8f;
 
@@ -150,7 +150,7 @@ public class Slam : BasicAttack
     {
         name = "Slam";
 
-        range = 1.5f;
+        range = 1f;
 
         maxcooldown = 1.6f;
 

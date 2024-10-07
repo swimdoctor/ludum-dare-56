@@ -19,26 +19,31 @@ public class FadeInOut : MonoBehaviour
         canvasGroup.blocksRaycasts = false;
     }
 
-    public void Show()
+    public void Show(float dur = -1)
     {
         canvasGroup.interactable = true;
         canvasGroup.blocksRaycasts = true;
-        StartCoroutine(Fade(0, 1));
+        StartCoroutine(Fade(0, 1, dur));
     }
 
-    public void Hide()
+    public void Hide(float dur = -1)
     {
-        StartCoroutine(Fade(1, 0));
+        StartCoroutine(Fade(1, 0, dur));
     }
 
-    private IEnumerator Fade(float startAlpha, float endAlpha)
+    private IEnumerator Fade(float startAlpha, float endAlpha, float dur=-1)
     {
+        if (dur < 0)
+        {
+            dur = fadeDuration;
+        }
+
         float elapsedTime = 0f;
 
-        while (elapsedTime < fadeDuration)
+        while (elapsedTime < dur)
         {
             elapsedTime += Time.deltaTime;
-            canvasGroup.alpha = Mathf.Lerp(startAlpha, endAlpha, elapsedTime / fadeDuration);
+            canvasGroup.alpha = Mathf.Lerp(startAlpha, endAlpha, elapsedTime / dur);
             yield return null;
         }
 

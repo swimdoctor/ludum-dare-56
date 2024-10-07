@@ -16,8 +16,8 @@ public class Creature
         Plant,
         Knight,
         Candle,
-        Slugduck,
-        WaterDragon,
+        //Slugduck,
+        //WaterDragon,
         SwirlyDragon,
         Cardboard,
         Panda,
@@ -219,7 +219,7 @@ public class Creature
         switch (i)
         {
             case BasicCreature.Burger:
-                return new Creature("Burger", new List<string>() { "Bur", "ger" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.Punch], .7f, .2f, .9f, .25f,
+                return new Creature("Burger", new List<string>() { "Bur", "ger" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.HealOrb], .7f, .2f, .9f, .25f,
                     getTraitsFromPool(new List<Traits>()
                     {
                         Traits.Juggernaut,
@@ -273,7 +273,7 @@ public class Creature
                         Traits.Strength,}
                     )
                 );
-            case BasicCreature.Slugduck:
+            /*case BasicCreature.Slugduck:
                 return new Creature("Knight", new List<string>() { "Slug", "duck" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.HealOrb], .6f, .4f, .5f, .6f,
                     getTraitsFromPool(new List<Traits>()
                     {
@@ -285,7 +285,7 @@ public class Creature
                     )
                 );
             case BasicCreature.WaterDragon:
-                return new Creature("Knight", new List<string>() { "Water", "dragon" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.HealOrb], .5f, .5f, .65f, .7f,
+                return new Creature("GhostDragon", new List<string>() { "Water", "dragon" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.HealOrb], .5f, .5f, .65f, .7f,
                     getTraitsFromPool(new List<Traits>()
                     {
                         Traits.Juggernaut,
@@ -294,7 +294,7 @@ public class Creature
                         Traits.Brawler,
                         Traits.Vampiric,}
                     )
-                );
+                );*/
             case BasicCreature.SwirlyDragon:
                 return new Creature("GhostDragon", new List<string>() { "Swirly", "dragon" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.MagicAttack], .35f, .8f, .3f, .1f,
                     getTraitsFromPool(new List<Traits>()
@@ -320,7 +320,7 @@ public class Creature
                     )
                 );
             case BasicCreature.Panda:
-                return new Creature("panda", new List<string>() { "Trash", "panda" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.Slam], .8f, .4f, .5f, .3f,
+                return new Creature("panda", new List<string>() { "Trash", "panda" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.HealOrb], .8f, .4f, .5f, .3f,
                     getTraitsFromPool(new List<Traits>()
                     {
                         Traits.Juggernaut,

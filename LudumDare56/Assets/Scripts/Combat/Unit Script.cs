@@ -141,6 +141,17 @@ public class UnitScript : MonoBehaviour
 
     }
 
+    private void OnMouseOver()
+    {
+        CombatManager.Instance.creatureHover = unit_id;
+    }
+
+    private void OnMouseExit()
+    {
+        CombatManager.Instance.creatureHover = -1;
+    }
+
+
     private void doDuringCombat()
     {
         if (currentTarget == null)
