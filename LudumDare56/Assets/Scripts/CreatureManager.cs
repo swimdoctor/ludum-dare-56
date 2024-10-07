@@ -1,7 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.U2D.Animation;
+using UnityEngine.UI;
 
 public class CreatureManager : MonoBehaviour
 {
@@ -9,28 +12,38 @@ public class CreatureManager : MonoBehaviour
 
 	public List<Creature> inventory = new List<Creature>();
 	public List<Creature> bestiary = new List<Creature>();
-	public Creature[] party = new Creature[5];
+	public List<Creature> party = new List<Creature>(new Creature[5]);
+	public Creature mergeA;
+	public Creature mergeB;
+	public Creature mergeAB;
 
 	public GameObject creaturePrefab;
-	public GameObject partyMenuCreatures;
 
 	[SerializeField] Sprite Kick;
 	public Sprite Add;
 
 	Transform[] partyLocations = new Transform[5];
+	Transform[] mergeLocations = new Transform[3];
+
+	bool partySelected = true;
+	int selectedIndex = -1;
 
 	private void OnEnable()
 	{
 		instance = this; 
-		for(int i = 0; i < 5; i++)
-		{
-			partyLocations[i] = partyMenuCreatures.transform.GetChild(i);
-		}
 	}
 
 	// Start is called before the first frame update
 	void Start()
-    {
+	{
+		for(int i = 0; i < 5; i++)
+		{
+			partyLocations[i] = OOBMenu.instance.party.transform.GetChild(0).GetChild(i);
+		}
+		for(int i = 0; i < 3; i++)
+		{
+			mergeLocations[i] = OOBMenu.instance.merge.transform.GetChild(0).GetChild(i);
+		}
 		AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Plant));
         AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Knight));
         AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Steampunk));
@@ -52,6 +65,76 @@ public class CreatureManager : MonoBehaviour
 				break;
 			}
 		}
+
+		//Update InventoryMenuObject size
+		Transform content = OOBMenu.instance.inventory.transform.GetChild(0).GetChild(0);
+		content.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, inventory.Count * 50);
+		while(content.childCount < inventory.Count)
+		{
+			GameObject button = new GameObject();
+			button.AddComponent<RectTransform>().SetParent(content);
+			button.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, .5f);
+			button.GetComponent<RectTransform>().localScale = new Vector2(1, 1);
+			button.GetComponent<RectTransform>().SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 50 * content.childCount - 50, 50);
+			button.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 32);
+			int index = content.childCount - 1;
+			button.name = "Creature " + index;
+			button.AddComponent<Button>().onClick.AddListener(() => SelectInventory(index));
+			button.AddComponent<Image>().color = new Color(0.3f, 0.8f, 0.6f, 0);
+			GameObject GO = Instantiate(creaturePrefab, button.transform);
+			GO.AddComponent<RectTransform>();
+			GO.GetComponent<RectTransform>().localScale = new Vector3(10, 10, 1);
+			GO.GetComponent<RectTransform>().anchoredPosition = new Vector2(.5f, .5f);
+
+			UpdateInventorySprites();
+		}
+	}
+
+	//Player loses a creature due to merging
+	public void RemoveCreature(Creature creature)
+	{
+		bestiary.Remove(creature);
+		inventory.Remove(creature);
+		for(int i = 0; i < 5; i++)
+		{
+			if(party[i] == creature)
+			{
+				party[i] = null;
+			}
+		}
+
+		//Update InventoryMenuObject size
+		Transform content = OOBMenu.instance.inventory.transform.GetChild(0).GetChild(0);
+		content.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, inventory.Count * 50);
+		UpdateInventorySprites();
+	}
+
+	public void UpdateInventorySprites()
+	{
+		Transform content = OOBMenu.instance.inventory.transform.GetChild(0).GetChild(0);
+		for(int i = 0; i < Math.Min(inventory.Count, content.childCount); i++)
+		{
+			content.GetChild(i).GetChild(0).GetComponent<SpriteRenderer>().sprite = inventory[i].torso;
+			content.GetChild(i).GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sprite = inventory[i].leftLeg;
+			content.GetChild(i).GetChild(0).GetChild(1).GetComponent<SpriteRenderer>().sprite = inventory[i].rightLeg;
+			content.GetChild(i).GetChild(0).GetChild(2).GetComponent<SpriteRenderer>().sprite = inventory[i].leftArm;
+			content.GetChild(i).GetChild(0).GetChild(3).GetComponent<SpriteRenderer>().sprite = inventory[i].rightArm;
+			content.GetChild(i).GetChild(0).GetChild(4).GetComponent<SpriteRenderer>().sprite = inventory[i].head;
+			content.GetChild(i).GetChild(0).GetChild(5).GetComponent<SpriteRenderer>().sprite = inventory[i].headAccessory;
+			SpriteSkinUtility.ResetBindPose(content.GetChild(i).GetChild(0).GetComponent<SpriteSkin>());
+			SpriteSkinUtility.ResetBindPose(content.GetChild(i).GetChild(0).GetChild(4).GetComponent<SpriteSkin>());
+		}
+
+		for(int i = inventory.Count; i < content.childCount; i++)
+		{
+			content.GetChild(i).GetChild(0).GetComponent<SpriteRenderer>().sprite = null;
+			content.GetChild(i).GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sprite = null;
+			content.GetChild(i).GetChild(0).GetChild(1).GetComponent<SpriteRenderer>().sprite = null;
+			content.GetChild(i).GetChild(0).GetChild(2).GetComponent<SpriteRenderer>().sprite = null;
+			content.GetChild(i).GetChild(0).GetChild(3).GetComponent<SpriteRenderer>().sprite = null;
+			content.GetChild(i).GetChild(0).GetChild(4).GetComponent<SpriteRenderer>().sprite = null;
+			content.GetChild(i).GetChild(0).GetChild(5).GetComponent<SpriteRenderer>().sprite = null;
+		}
 	}
 
 	public void UpdateParty(Creature creature, int index)
@@ -62,27 +145,183 @@ public class CreatureManager : MonoBehaviour
 		party[index] = creature;
 
 		if(partyLocations[index].childCount == 0)
-			Instantiate(creaturePrefab, partyLocations[index]).transform.localScale = new Vector3(30, 30, 1);
-
+			Instantiate(creaturePrefab, partyLocations[index]).transform.localScale = new Vector3(10, 10, 1);
+		UpdateStats(creature);
 		//Update Sprites
-		partyLocations[index].GetChild(0).GetComponent<SpriteRenderer>().sprite = creature.torso;
-		partyLocations[index].GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sprite = creature.leftLeg;
-		partyLocations[index].GetChild(0).GetChild(1).GetComponent<SpriteRenderer>().sprite = creature.rightLeg;
-		partyLocations[index].GetChild(0).GetChild(2).GetComponent<SpriteRenderer>().sprite = creature.leftArm;
-		partyLocations[index].GetChild(0).GetChild(3).GetComponent<SpriteRenderer>().sprite = creature.rightArm;
-		partyLocations[index].GetChild(0).GetChild(4).GetComponent<SpriteRenderer>().sprite = creature.head;
-		partyLocations[index].GetChild(0).GetChild(5).GetComponent<SpriteRenderer>().sprite = creature.headAccessory;
-
-		//Rebind Poses
-	// 	SpriteSkinUtility.ResetBindPose(partyLocations[index].GetChild(0).GetComponent<SpriteSkin>());
-	// 	SpriteSkinUtility.ResetBindPose(partyLocations[index].GetChild(0).GetChild(4).GetComponent<SpriteSkin>());
+		if(creature == null)
+		{
+			partyLocations[index].GetChild(0).GetComponent<SpriteRenderer>().sprite = null;
+			partyLocations[index].GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sprite = null;
+			partyLocations[index].GetChild(0).GetChild(1).GetComponent<SpriteRenderer>().sprite = null;
+			partyLocations[index].GetChild(0).GetChild(2).GetComponent<SpriteRenderer>().sprite = null;
+			partyLocations[index].GetChild(0).GetChild(3).GetComponent<SpriteRenderer>().sprite = null;
+			partyLocations[index].GetChild(0).GetChild(4).GetComponent<SpriteRenderer>().sprite = null;
+			partyLocations[index].GetChild(0).GetChild(5).GetComponent<SpriteRenderer>().sprite = null;
+		}
+		else
+		{
+			partyLocations[index].GetChild(0).GetComponent<SpriteRenderer>().sprite = creature.torso;
+			partyLocations[index].GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sprite = creature.leftLeg;
+			partyLocations[index].GetChild(0).GetChild(1).GetComponent<SpriteRenderer>().sprite = creature.rightLeg;
+			partyLocations[index].GetChild(0).GetChild(2).GetComponent<SpriteRenderer>().sprite = creature.leftArm;
+			partyLocations[index].GetChild(0).GetChild(3).GetComponent<SpriteRenderer>().sprite = creature.rightArm;
+			partyLocations[index].GetChild(0).GetChild(4).GetComponent<SpriteRenderer>().sprite = creature.head;
+			partyLocations[index].GetChild(0).GetChild(5).GetComponent<SpriteRenderer>().sprite = creature.headAccessory;
+			SpriteSkinUtility.ResetBindPose(partyLocations[index].GetChild(0).GetComponent<SpriteSkin>());
+			SpriteSkinUtility.ResetBindPose(partyLocations[index].GetChild(0).GetChild(4).GetComponent<SpriteSkin>());
+		}
 	}
 
-// 	public void UpdatePartyStats(Creature creature)
-// 	{
-// 		//Update Creature Icon
+	public void UpdateMerge(Creature creature, int index)
+	{
+		if(index < 0 || index > 2)
+			return;
 
-// 		//Update Creature Stats
-// 		//Update Add/Kick Button
-// 	}
+		if(mergeA == null)
+			mergeA = creature;
+		else if(mergeB == null)
+			mergeB = creature;
+
+		if(mergeLocations[index].childCount == 0)
+			Instantiate(creaturePrefab, mergeLocations[index]).transform.localScale = new Vector3(10, 10, 1);
+		UpdateStats(creature);
+		//Update Sprites
+		if(creature == null)
+		{
+			mergeLocations[index].GetChild(0).GetComponent<SpriteRenderer>().sprite = null;
+			mergeLocations[index].GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sprite = null;
+			mergeLocations[index].GetChild(0).GetChild(1).GetComponent<SpriteRenderer>().sprite = null;
+			mergeLocations[index].GetChild(0).GetChild(2).GetComponent<SpriteRenderer>().sprite = null;
+			mergeLocations[index].GetChild(0).GetChild(3).GetComponent<SpriteRenderer>().sprite = null;
+			mergeLocations[index].GetChild(0).GetChild(4).GetComponent<SpriteRenderer>().sprite = null;
+			mergeLocations[index].GetChild(0).GetChild(5).GetComponent<SpriteRenderer>().sprite = null;
+		}
+		else
+		{
+			mergeLocations[index].GetChild(0).GetComponent<SpriteRenderer>().sprite = creature.torso;
+			mergeLocations[index].GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sprite = creature.leftLeg;
+			mergeLocations[index].GetChild(0).GetChild(1).GetComponent<SpriteRenderer>().sprite = creature.rightLeg;
+			mergeLocations[index].GetChild(0).GetChild(2).GetComponent<SpriteRenderer>().sprite = creature.leftArm;
+			mergeLocations[index].GetChild(0).GetChild(3).GetComponent<SpriteRenderer>().sprite = creature.rightArm;
+			mergeLocations[index].GetChild(0).GetChild(4).GetComponent<SpriteRenderer>().sprite = creature.head;
+			mergeLocations[index].GetChild(0).GetChild(5).GetComponent<SpriteRenderer>().sprite = creature.headAccessory;
+			SpriteSkinUtility.ResetBindPose(mergeLocations[index].GetChild(0).GetComponent<SpriteSkin>());
+			SpriteSkinUtility.ResetBindPose(mergeLocations[index].GetChild(0).GetChild(4).GetComponent<SpriteSkin>());
+		}
+	}
+
+	public void SelectParty(int index)
+	{
+		partySelected = true;
+		selectedIndex = index;
+		UpdateStats(party[index]);
+	}
+	public void SelectInventory(int index)
+	{
+		partySelected = false;
+		selectedIndex = index;
+		UpdateStats(inventory[index]);
+	}
+
+	public void UpdateStats(Creature creature)
+	{
+		Transform partyStatsTorsoTransform = OOBMenu.instance.stats.transform.GetChild(0);
+		//Update Creature Icon
+		if(partyStatsTorsoTransform.childCount == 0)
+		{
+			Instantiate(creaturePrefab, partyStatsTorsoTransform).transform.localScale = new Vector3(10, 10, 1);
+		}
+
+		if(creature == null)
+		{
+			partyStatsTorsoTransform.GetChild(0).GetComponent<SpriteRenderer>().sprite = null;
+			partyStatsTorsoTransform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sprite = null;
+			partyStatsTorsoTransform.GetChild(0).GetChild(1).GetComponent<SpriteRenderer>().sprite = null;
+			partyStatsTorsoTransform.GetChild(0).GetChild(2).GetComponent<SpriteRenderer>().sprite = null;
+			partyStatsTorsoTransform.GetChild(0).GetChild(3).GetComponent<SpriteRenderer>().sprite = null;
+			partyStatsTorsoTransform.GetChild(0).GetChild(4).GetComponent<SpriteRenderer>().sprite = null;
+			partyStatsTorsoTransform.GetChild(0).GetChild(5).GetComponent<SpriteRenderer>().sprite = null;
+		}
+		else
+		{
+			partyStatsTorsoTransform.GetChild(0).GetComponent<SpriteRenderer>().sprite = creature.torso;
+			partyStatsTorsoTransform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().sprite = creature.leftLeg;
+			partyStatsTorsoTransform.GetChild(0).GetChild(1).GetComponent<SpriteRenderer>().sprite = creature.rightLeg;
+			partyStatsTorsoTransform.GetChild(0).GetChild(2).GetComponent<SpriteRenderer>().sprite = creature.leftArm;
+			partyStatsTorsoTransform.GetChild(0).GetChild(3).GetComponent<SpriteRenderer>().sprite = creature.rightArm;
+			partyStatsTorsoTransform.GetChild(0).GetChild(4).GetComponent<SpriteRenderer>().sprite = creature.head;
+			partyStatsTorsoTransform.GetChild(0).GetChild(5).GetComponent<SpriteRenderer>().sprite = creature.headAccessory;
+			SpriteSkinUtility.ResetBindPose(partyStatsTorsoTransform.GetChild(0).GetComponent<SpriteSkin>());
+			SpriteSkinUtility.ResetBindPose(partyStatsTorsoTransform.GetChild(0).GetChild(4).GetComponent<SpriteSkin>());
+		}
+		
+
+		//Update Creature Stats ----------------------------------------------
+
+		//Update Add/Kick Button
+		if(party.Contains(creature))
+			OOBMenu.instance.stats.transform.GetChild(1).GetComponent<Image>().sprite = Kick;
+		else
+			OOBMenu.instance.stats.transform.GetChild(1).GetComponent<Image>().sprite = Add;
+
+	}
+
+	public void PressAddKickMerge()
+	{
+		if(selectedIndex < 0)
+			return;
+
+		if(OOBMenu.instance.menuState == OOBMenu.MenuState.Party)
+		{
+			if(partySelected && selectedIndex < 5)
+			{
+				UpdateParty(null, selectedIndex);
+				selectedIndex = -1;
+			}
+			else if(!partySelected && selectedIndex < inventory.Count)
+			{
+				if(!party.Contains(inventory[selectedIndex])){
+					for(int i = 0; i < 5; i++)
+					{
+						if(party[i] == null)
+						{
+							UpdateParty(inventory[selectedIndex], i);
+							break;
+						}
+					}
+				}
+				else
+				{
+					UpdateParty(null, party.IndexOf(inventory[selectedIndex]));
+				}
+			}
+		}
+		else if(OOBMenu.instance.menuState == OOBMenu.MenuState.Merge)
+		{
+			if(partySelected)
+			{
+				if(selectedIndex < 2)
+				{
+					//Clicked On While Selecting A or B
+				}
+				if(selectedIndex == 2)
+				{
+					//Clicked On While Selecting AB
+				}
+			}
+			else if(!partySelected && selectedIndex < inventory.Count)
+			{
+				Creature creature = inventory[selectedIndex];
+				if(creature != mergeA && creature != mergeB)
+				{
+					UpdateMerge(creature, selectedIndex);
+					//Remove creature from slot 3 if there
+				}
+				else
+				{
+					UpdateMerge(null, party.IndexOf(inventory[selectedIndex]));
+				}
+			}
+		}
+	}
 }

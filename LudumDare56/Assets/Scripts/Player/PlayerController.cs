@@ -27,19 +27,16 @@ public class PlayerController : MonoBehaviour
     {
         SubscribeInputActions();
         SwitchActionMap("World");
-        print("enabled");
     }
 
     private void OnDisable()
     {
         UnSubscribeInputActions();
         SwitchActionMap();
-		print("disabled");
 	}
 
     private void SubscribeInputActions()
 	{
-		print("like and subscribe");
 		playerInputActions.World.Move.started += MoveAction;
         playerInputActions.World.Move.performed += MoveAction;
         playerInputActions.World.Move.canceled += MoveAction;
@@ -58,7 +55,6 @@ public class PlayerController : MonoBehaviour
 
     private void MoveAction(InputAction.CallbackContext context)
     {
-		print("Be sure to hit that bell!");
 		inputMovement = context.ReadValue<Vector2>();
         playerMovement.SetMovement(inputMovement);
     }

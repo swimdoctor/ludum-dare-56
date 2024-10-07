@@ -13,7 +13,6 @@ public class OOBMenu : MonoBehaviour
         None,
         Menu,
         Party,
-        Bag,
         Merge,
         Settings
     }
@@ -22,7 +21,9 @@ public class OOBMenu : MonoBehaviour
 
     public GameObject menu;
     public GameObject party;
-    public GameObject bag;
+    public GameObject merge;
+    public GameObject inventory;
+    public GameObject stats;
 
 	private void OnEnable()
 	{
@@ -52,31 +53,41 @@ public class OOBMenu : MonoBehaviour
             case MenuState.None:
                 menu.SetActive(false);
                 party.SetActive(false);
-                bag.SetActive(false);
+                merge.SetActive(false);
+                inventory.SetActive(false);
+                stats.SetActive(false);
                 //Close other menus
                 break;
             case MenuState.Menu:
 				menu.SetActive(true);
 				party.SetActive(false);
-				bag.SetActive(false);
+				merge.SetActive(false);
+				inventory.SetActive(false);
+				stats.SetActive(false);
 				//Close other menus
 				break;
             case MenuState.Party:
 				menu.SetActive(true);
 				party.SetActive(true);
-				bag.SetActive(false);
+				merge.SetActive(false);
+				inventory.SetActive(true);
+				stats.SetActive(true);
 				//Close other menus
 				break;
-            case MenuState.Bag:
+            case MenuState.Merge:
 				menu.SetActive(true);
 				party.SetActive(false);
-				bag.SetActive(true);
+				merge.SetActive(true);
+				inventory.SetActive(true);
+				stats.SetActive(true);
 				//Close other menus
 				break;
             case MenuState.Settings:
 				menu.SetActive(true);
 				party.SetActive(false);
-				bag.SetActive(false);
+				merge.SetActive(false);
+				inventory.SetActive(false);
+				stats.SetActive(false);
 				//OpenSettingsMenu
 				//Close other menus
 				break;
