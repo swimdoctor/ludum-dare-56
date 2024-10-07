@@ -150,7 +150,7 @@ public class Slam : BasicAttack
     {
         name = "Slam";
 
-        range = 1f;
+        range = 2f;
 
         maxcooldown = 1.6f;
 

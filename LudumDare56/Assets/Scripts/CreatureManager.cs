@@ -48,11 +48,12 @@ public class CreatureManager : MonoBehaviour
     {
         Debug.Log($"Scene loaded: {scene.name} with mode: {mode}");
         // You can add your logic here for what to do when the scene is loaded
-
-		if (CombatManager.giveReward)
+        StartCoroutine(reload());
+        if (CombatManager.giveReward)
 		{
 			StartCoroutine(giveNewCreature());
 		}
+        
     }
 
 	IEnumerator giveNewCreature()
@@ -60,6 +61,37 @@ public class CreatureManager : MonoBehaviour
 		yield return null;
         AddCreature(CombatManager.reward);
         CombatManager.giveReward = false;
+    }
+
+	IEnumerator reload()
+	{
+        yield return null;
+        //Update InventoryMenuObject size
+        Transform content = OOBMenu.instance.inventory.transform.GetChild(0).GetChild(0);
+        content.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, inventory.Count * 50);
+        while (content.childCount < inventory.Count)
+        {
+            GameObject button = new GameObject();
+            button.AddComponent<RectTransform>().SetParent(content);
+            button.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, .5f);
+            button.GetComponent<RectTransform>().localScale = new Vector2(1, 1);
+            button.GetComponent<RectTransform>().SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 50 * content.childCount - 50, 50);
+            button.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 32);
+            int index = content.childCount - 1;
+            button.name = "Creature " + index;
+            button.AddComponent<Button>().onClick.AddListener(() => SelectInventory(index));
+            button.AddComponent<Image>().color = new Color(0.3f, 0.8f, 0.6f, 0);
+            GameObject GO = Instantiate(creaturePrefab, button.transform);
+            GO.AddComponent<RectTransform>();
+            GO.GetComponent<RectTransform>().localScale = new Vector3(10, 10, 1);
+            GO.GetComponent<RectTransform>().anchoredPosition = new Vector2(.5f, .5f);
+        }
+
+        for (int i = 0; i < 5; i++)
+        {
+            UpdateParty(party[i], i);
+        }
+        UpdateInventorySprites();
     }
 
     // Start is called before the first frame update
@@ -118,6 +150,12 @@ public class CreatureManager : MonoBehaviour
 			GO.GetComponent<RectTransform>().localScale = new Vector3(10, 10, 1);
 			GO.GetComponent<RectTransform>().anchoredPosition = new Vector2(.5f, .5f);
 		}
+
+		for (int i = 0; i < 5; i++)
+		{
+			UpdateParty(party[i], i);
+		}
+
 		UpdateInventorySprites();
 	}
 
@@ -138,10 +176,13 @@ public class CreatureManager : MonoBehaviour
 		Transform content = OOBMenu.instance.inventory.transform.GetChild(0).GetChild(0);
 		content.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, inventory.Count * 50);
 		UpdateInventorySprites();
+
+		reload();
 	}
 
 	public void UpdateInventorySprites()
 	{
+		Debug.Log("YEOWFJISD");
 		Transform content = OOBMenu.instance.inventory.transform.GetChild(0).GetChild(0);
 		for(int i = 0; i < Math.Min(inventory.Count, content.childCount); i++)
 		{
