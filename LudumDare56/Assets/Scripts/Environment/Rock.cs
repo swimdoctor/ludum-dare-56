@@ -11,7 +11,6 @@ public class Rock : MonoBehaviour, IInteractable
     public void Interact(GameObject User)
     {
         SceneManager.LoadScene(CombatScene);
-        Debug.Log("Interacted with wizard tower");
     }
 
 

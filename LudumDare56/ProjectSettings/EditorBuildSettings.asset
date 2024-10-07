@@ -9,8 +9,8 @@ EditorBuildSettings:
     path: Assets/Scenes/MainWorldScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
-    path: Assets/Scenes/WorldScenes/SwampSceneV2.unity
-    guid: 79f9c808b71cd0643ab07e31d0c600d8
+    path: Assets/Scenes/Combat.unity
+    guid: 0086280b3774a194b8b1a366533316f2
   - enabled: 1
     path: Assets/Scenes/CombatV2.unity
     guid: 9c8f304b2c9d5704aae8ada24c530c89
@@ -18,7 +18,13 @@ EditorBuildSettings:
     path: Assets/Scenes/WorldScenes/TitleScene.unity
     guid: 7c67e32454b5bf74a8400794202782c9
   - enabled: 1
+    path: Assets/Scenes/WorldScenes/SwampScene.unity
+    guid: 70c7a456cdd43f048a806372ef8db036
+  - enabled: 1
     path: Assets/Scenes/WorldScenes/SwampSceneV3.unity
     guid: beb80222951781a4ebc5d8986e17b6f7
+  - enabled: 1
+    path: Assets/Scenes/WorldScenes/SwampSceneV4.unity
+    guid: 79f9c808b71cd0643ab07e31d0c600d8
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: cbe32f621a938bf4190fe51ec05459b3, type: 3}
