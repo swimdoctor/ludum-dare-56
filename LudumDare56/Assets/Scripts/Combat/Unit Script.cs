@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.U2D.Animation;
 using UnityEngine.UIElements;
 using static Unity.VisualScripting.Member;
 
@@ -55,7 +56,17 @@ public class UnitScript : MonoBehaviour
             trait.ModifyStats(this);
         }
 
-        primaryAttack = stats.primaryAttack;
+		transform.GetChild(1).GetComponent<SpriteRenderer>().sprite = stats.torso;
+		transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().sprite = stats.leftLeg;
+		transform.GetChild(1).GetChild(1).GetComponent<SpriteRenderer>().sprite = stats.rightLeg;
+		transform.GetChild(1).GetChild(2).GetComponent<SpriteRenderer>().sprite = stats.leftArm;
+		transform.GetChild(1).GetChild(3).GetComponent<SpriteRenderer>().sprite = stats.rightArm;
+		transform.GetChild(1).GetChild(4).GetComponent<SpriteRenderer>().sprite = stats.head;
+		transform.GetChild(1).GetChild(5).GetComponent<SpriteRenderer>().sprite = stats.headAccessory;
+		SpriteSkinUtility.ResetBindPose(transform.GetChild(1).GetComponent<SpriteSkin>());
+		SpriteSkinUtility.ResetBindPose(transform.GetChild(1).GetChild(4).GetComponent<SpriteSkin>());
+
+		primaryAttack = stats.primaryAttack;
         primaryAttackCooldown = primaryAttack.maxcooldown;
         currentHP = stats.maxHealth;
 
