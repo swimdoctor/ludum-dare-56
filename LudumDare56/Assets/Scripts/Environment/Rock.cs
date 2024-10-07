@@ -10,6 +10,7 @@ public class Rock : MonoBehaviour, IInteractable
 
     public void Interact(GameObject User)
     {
+        CombatManager.difficulty = difficulty;
         SceneManager.LoadScene(CombatScene);
     }
 

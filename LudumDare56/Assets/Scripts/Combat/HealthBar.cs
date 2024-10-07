@@ -9,6 +9,7 @@ public class PlayerHealth : MonoBehaviour
     public float maxHealth;
     private float currentHealth;
     private Transform healthBarTransform;
+    private SpriteRenderer sr;
 
     void Start()
     {
@@ -16,7 +17,12 @@ public class PlayerHealth : MonoBehaviour
         maxHealth = unit.stats.maxHealth;
         currentHealth = maxHealth;
         healthBarTransform = GetComponent<Transform>();
-    }
+        sr = GetComponent<SpriteRenderer>();
+        if (unit.team)
+            sr.color = new Color(1f, 0f, 1f);
+        else
+            sr.color = new Color(1f, 0f, 0f);
+    }   
 
     void Update(){
 

@@ -28,6 +28,10 @@ public class CombatManager : MonoBehaviour
     public static Creature reward;
     public static bool giveReward;
 
+    public static int difficulty;
+
+    public int creatureHover;
+
     public enum State
     {
         Before,
@@ -72,7 +76,7 @@ public class CombatManager : MonoBehaviour
         lossFade = lossUI.GetComponent<FadeInOut>();
 
         List<Creature> team1 = CreatureManager.party;
-        List<Creature> team2 = Creature.GenerateTeam(7, maxSize: 3);
+        List<Creature> team2 = Creature.GenerateTeam(difficulty, maxSize: 5);
 
         SetupCombat(team1, team2);
 
@@ -126,7 +130,7 @@ public class CombatManager : MonoBehaviour
         unitInfo.UpdateInfo(reward);
         unitInfoFade.Show();
 
-        victoryText.text = $"{reward.Name} was like super impressed by your party's prowess. Let {reward.Name} join your team?";
+        victoryText.text = $"{reward.Name} was impressed by your party's prowess. Let {reward.Name} join your team?";
         victoryFade.Show();
     }
 
