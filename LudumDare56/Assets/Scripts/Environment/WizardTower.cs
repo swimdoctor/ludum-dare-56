@@ -8,6 +8,7 @@ public class WizardTower : MonoBehaviour, IInteractable
 
 
     public string CombatScene;
+    [SerializeField] private int difficulty;
 
 
     public void Interact(GameObject User)
