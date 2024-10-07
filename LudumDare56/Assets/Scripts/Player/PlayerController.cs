@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private float interactRange;
 
+    static Vector3 playerPos;
 
     private void Awake()
     {
@@ -27,7 +28,9 @@ public class PlayerController : MonoBehaviour
     {
         SubscribeInputActions();
         SwitchActionMap("World");
-    }
+        transform.position = playerPos;
+
+	}
 
     private void OnDisable()
     {

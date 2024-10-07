@@ -9,7 +9,9 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector2 inputMovement;
 
-    [SerializeField] private float moveSpeed;
+    static Vector3 playerPos;
+
+	[SerializeField] private float moveSpeed;
 
     private Direction direction;
 
@@ -22,7 +24,15 @@ public class PlayerMovement : MonoBehaviour
     {
         direction = Direction.Up;
     }
-    private void FixedUpdate()
+
+	private void Start()
+	{
+
+		transform.position = playerPos;
+        rigidbody.MovePosition(playerPos);
+        rigidbody.position = playerPos;
+	}
+	private void FixedUpdate()
     {
 
 
@@ -58,8 +68,7 @@ public class PlayerMovement : MonoBehaviour
         movement *= Time.deltaTime;
 
         rigidbody.MovePosition(rigidbody.position+movement);
-
-
+        playerPos = transform.position;
     }
 
     //Figure out direction last movement was in and sets direction
