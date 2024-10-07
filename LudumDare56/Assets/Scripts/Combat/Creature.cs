@@ -143,8 +143,7 @@ public class Creature
         switch (i)
         {
             case BasicCreature.Burger:
-                return new Creature("Burger",
-                    new List<string>() { "Bur", "ger" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.Punch], .7f, .2f, .9f, .25f,
+                return new Creature("Burger", new List<string>() { "Bur", "ger" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.Punch], .7f, .2f, .9f, .25f,
                     getTraitsFromPool(new List<Traits>()
                     {
                         Traits.Juggernaut,
@@ -155,7 +154,7 @@ public class Creature
                 );
 
             case BasicCreature.Steampunk:
-                return new Creature("Steampunk", new List<string>() { "Steam", "punk" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.Punch], .35f, .9f, .3f, .75f,
+                return new Creature("Steampunk", new List<string>() { "Steam", "punk" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.MagicAttack], .35f, .9f, .3f, .75f,
                     getTraitsFromPool(new List<Traits>()
                     {
                         Traits.GlassCannon,
@@ -177,7 +176,7 @@ public class Creature
                     )
                 );
             case BasicCreature.Knight:
-                return new Creature("Knight", new List<string>() { "Sir ", "knight" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.Punch], .8f, .3f, .7f, .15f,
+                return new Creature("Knight", new List<string>() { "Sir ", "knight" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.Slam], .8f, .3f, .7f, .15f,
                     getTraitsFromPool(new List<Traits>()
                     {
                         Traits.Juggernaut,
@@ -199,7 +198,7 @@ public class Creature
                     )
                 );
             case BasicCreature.Slugduck:
-                return new Creature("Knight", new List<string>() { "Slug", "duck" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.Punch], .6f, .4f, .5f, .6f,
+                return new Creature("Knight", new List<string>() { "Slug", "duck" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.HealOrb], .6f, .4f, .5f, .6f,
                     getTraitsFromPool(new List<Traits>()
                     {
                         Traits.Healthy,
@@ -209,8 +208,19 @@ public class Creature
                         Traits.Strength,}
                     )
                 );
+            case BasicCreature.WaterDragon:
+                return new Creature("Knight", new List<string>() { "Water", "dragon" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.HealOrb], .5f, .5f, .65f, .7f,
+                    getTraitsFromPool(new List<Traits>()
+                    {
+                        Traits.Juggernaut,
+                        Traits.meleeFireProjectile,
+                        Traits.Agile,
+                        Traits.Brawler,
+                        Traits.Vampiric,}
+                    )
+                );
             case BasicCreature.SwirlyDragon:
-                return new Creature("Knight", new List<string>() { "Swirly", "dragon" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.Punch], .35f, .8f, .3f, .1f,
+                return new Creature("Knight", new List<string>() { "Swirly", "dragon" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.MagicAttack], .35f, .8f, .3f, .1f,
                     getTraitsFromPool(new List<Traits>()
                     {
                         Traits.Juggernaut,
@@ -234,7 +244,7 @@ public class Creature
                     )
                 );
             case BasicCreature.Panda:
-                return new Creature("Knight", new List<string>() { "Trash", "panda" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.Punch], .8f, .4f, .5f, .3f,
+                return new Creature("Knight", new List<string>() { "Trash", "panda" }, BasicAttack.basicAttacksList[(int)BasicAttack.Attacks.Slam], .8f, .4f, .5f, .3f,
                     getTraitsFromPool(new List<Traits>()
                     {
                         Traits.Juggernaut,
@@ -271,14 +281,20 @@ public class Creature
                 int index = UnityEngine.Random.Range(0, newTeam.Count);
                 Creature creatureToMerge = newTeam[index];
 
+                Debug.Log(creatureToMerge+ " " + basicCreature);
+                Debug.Log($"Merge {creatureToMerge.mergeLevel} {basicCreature.mergeLevel}, i={index}");
                 Creature newCreature = Merge(creatureToMerge, basicCreature);
 
-                newTeam.RemoveAt(index); // Remove creature that got merged with
+
                 newTeam.Add(newCreature);
-                
+                newTeam.RemoveAt(index); // Remove creature that got merged with
+
+
+
             } 
             else
             {
+                Debug.Log("Making new creature, count = " + newTeam.Count);
                 // Create a new creature and add it to the team
                 Creature creature = GetBasicCreature(GetRandomEnumValue<BasicCreature>());
                 newTeam.Add(creature);
@@ -297,10 +313,9 @@ public class Creature
 
     public static Creature Merge(Creature A, Creature B)
     {
-        Creature AB = new Creature("Knight", new List<string>() { "Merged ", "Creature" }, BasicAttack.basicAttacksList[0], .7f, .2f, .9f, .25f,
-                    new List<Trait>());
+        Creature AB = GetBasicCreature(BasicCreature.Burger);
 
-        AB.mergeLevel = Math.Max(A.mergeLevel, B.mergeLevel) + 1;
+        AB.mergeLevel = Mathf.Max(A.mergeLevel, B.mergeLevel) + 1;
         if (AB.mergeLevel > 3)
         {
             AB.mergeLevel = 3;

@@ -12,7 +12,8 @@ public class BasicAttack
         LeafAttack,
         MagicAttack,
         FlameThrowerAttack,
-        HealOrb
+        HealOrb,
+        Slam,
     }
 
     public static List<BasicAttack> basicAttacksList = new List<BasicAttack>()
@@ -22,6 +23,7 @@ public class BasicAttack
         new MagicAttack(),
         new FlameThrowerAttack(),
         new HealOrb(),
+        new Slam(),
     };
     public string name;
     public string description;
@@ -130,14 +132,32 @@ public class Punch : BasicAttack
 
         range = 1f;
 
-        maxcooldown = 2f;
+        maxcooldown = 0.8f;
 
-        minDamage = 16f;
+        minDamage = 17f;
         maxDamage = 22f;
 
-        knockBackAmount = 1f;
+        knockBackAmount = 3f;
     }
     
+}
+
+public class Slam : BasicAttack
+{
+    public Slam()
+    {
+        name = "Slam";
+
+        range = 1f;
+
+        maxcooldown = 1.6f;
+
+        minDamage = 34f;
+        maxDamage = 44f;
+
+        knockBackAmount = 5f;
+    }
+
 }
 
 public class LeafAttack : BasicAttack
@@ -151,8 +171,8 @@ public class LeafAttack : BasicAttack
 
         maxcooldown = 2f;
 
-        minDamage = 14f;
-        maxDamage = 18f;
+        minDamage = 8f;
+        maxDamage = 12f;
 
         knockBackAmount = 0.5f;
     }
@@ -177,10 +197,10 @@ public class MagicAttack : BasicAttack
 
         range = 7f;
 
-        maxcooldown = 0.8f;
+        maxcooldown = 1f;
 
-        minDamage = 5f;
-        maxDamage = 7f;
+        minDamage = 14f;
+        maxDamage = 18f;
 
         knockBackAmount = 1.5f;
     }
@@ -204,10 +224,10 @@ public class FlameThrowerAttack : BasicAttack
 
         maxcooldown = 0.06f;
 
-        minDamage = 1f;
-        maxDamage = 1.5f;
+        minDamage = 1.2f;
+        maxDamage = 1.6f;
 
-        knockBackAmount = 0f;
+        knockBackAmount = 0.05f;
     }
     public override void Activate(UnitScript attacker, UnitScript target)
     {
@@ -228,10 +248,10 @@ public class HealOrb : BasicAttack
 
         range = 8f;
 
-        maxcooldown = 1.5f;
+        maxcooldown = 1f;
 
-        minDamage = -15f;
-        maxDamage = -10f;
+        minDamage = -22f;
+        maxDamage = -18f;
 
         knockBackAmount = 0f;
 
