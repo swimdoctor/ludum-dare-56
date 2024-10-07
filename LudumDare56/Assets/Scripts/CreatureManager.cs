@@ -48,7 +48,8 @@ public class CreatureManager : MonoBehaviour
         AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Knight));
         AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Steampunk));
         AddCreature(Creature.GetBasicCreature(Creature.BasicCreature.Burger));
-    }
+
+	}
 
 	//Player collects new creature
 	public void AddCreature(Creature creature)
@@ -85,9 +86,8 @@ public class CreatureManager : MonoBehaviour
 			GO.AddComponent<RectTransform>();
 			GO.GetComponent<RectTransform>().localScale = new Vector3(10, 10, 1);
 			GO.GetComponent<RectTransform>().anchoredPosition = new Vector2(.5f, .5f);
-
-			UpdateInventorySprites();
 		}
+		UpdateInventorySprites();
 	}
 
 	//Player loses a creature due to merging
@@ -99,7 +99,7 @@ public class CreatureManager : MonoBehaviour
 		{
 			if(party[i] == creature)
 			{
-				party[i] = null;
+				UpdateParty(null, i);
 			}
 		}
 
@@ -143,11 +143,13 @@ public class CreatureManager : MonoBehaviour
 			return;
 
 		party[index] = creature;
+		//print((creature==null) + " " + (party[index]==null));
 
 		if(partyLocations[index].childCount == 0)
 			Instantiate(creaturePrefab, partyLocations[index]).transform.localScale = new Vector3(10, 10, 1);
 		UpdateStats(creature);
 		//Update Sprites
+		
 		if(creature == null)
 		{
 			partyLocations[index].GetChild(0).GetComponent<SpriteRenderer>().sprite = null;
@@ -157,6 +159,7 @@ public class CreatureManager : MonoBehaviour
 			partyLocations[index].GetChild(0).GetChild(3).GetComponent<SpriteRenderer>().sprite = null;
 			partyLocations[index].GetChild(0).GetChild(4).GetComponent<SpriteRenderer>().sprite = null;
 			partyLocations[index].GetChild(0).GetChild(5).GetComponent<SpriteRenderer>().sprite = null;
+			//print("Set index" + index + "'s sprites to null");
 		}
 		else
 		{
@@ -167,6 +170,11 @@ public class CreatureManager : MonoBehaviour
 			partyLocations[index].GetChild(0).GetChild(3).GetComponent<SpriteRenderer>().sprite = creature.rightArm;
 			partyLocations[index].GetChild(0).GetChild(4).GetComponent<SpriteRenderer>().sprite = creature.head;
 			partyLocations[index].GetChild(0).GetChild(5).GetComponent<SpriteRenderer>().sprite = creature.headAccessory;
+			//print(creature.torso);
+			//print(index);
+			//for(int i = 0; i < 5; i++)
+			//	if(party[i] != null)
+			//		print(i + party[i].Name);
 			SpriteSkinUtility.ResetBindPose(partyLocations[index].GetChild(0).GetComponent<SpriteSkin>());
 			SpriteSkinUtility.ResetBindPose(partyLocations[index].GetChild(0).GetChild(4).GetComponent<SpriteSkin>());
 		}
@@ -177,10 +185,12 @@ public class CreatureManager : MonoBehaviour
 		if(index < 0 || index > 2)
 			return;
 
-		if(mergeA == null)
+		if(index == 0)
 			mergeA = creature;
-		else if(mergeB == null)
+		else if(index == 1)
 			mergeB = creature;
+		else
+			mergeAB = creature;
 
 		if(mergeLocations[index].childCount == 0)
 			Instantiate(creaturePrefab, mergeLocations[index]).transform.localScale = new Vector3(10, 10, 1);
@@ -216,11 +226,33 @@ public class CreatureManager : MonoBehaviour
 		selectedIndex = index;
 		UpdateStats(party[index]);
 	}
+
 	public void SelectInventory(int index)
 	{
 		partySelected = false;
 		selectedIndex = index;
 		UpdateStats(inventory[index]);
+	}
+
+	public void MergeButton()
+	{
+		if(mergeA == null || mergeB == null)
+			return;
+		Creature AB = Creature.Merge(mergeA, mergeB);
+		RemoveCreature(mergeA);
+		RemoveCreature(mergeB);
+		UpdateMerge(null, 0);
+		UpdateMerge(null, 1);
+
+		AddCreature(AB);
+		UpdateMerge(AB, 2);
+	}
+
+	internal void ClearMerge()
+	{
+		UpdateMerge(null, 0);
+		UpdateMerge(null, 1);
+		UpdateMerge(null, 2);
 	}
 
 	public void UpdateStats(Creature creature)
@@ -276,7 +308,6 @@ public class CreatureManager : MonoBehaviour
 			if(partySelected && selectedIndex < 5)
 			{
 				UpdateParty(null, selectedIndex);
-				selectedIndex = -1;
 			}
 			else if(!partySelected && selectedIndex < inventory.Count)
 			{
@@ -302,11 +333,15 @@ public class CreatureManager : MonoBehaviour
 			{
 				if(selectedIndex < 2)
 				{
-					//Clicked On While Selecting A or B
+					UpdateMerge(null, selectedIndex);
 				}
 				if(selectedIndex == 2)
 				{
-					//Clicked On While Selecting AB
+					if(mergeA == null)
+						UpdateMerge(mergeAB, 0);
+					else if(mergeB == null)
+						UpdateMerge(mergeAB, 1);
+					if(mergeAB != null) UpdateMerge(null, 2);
 				}
 			}
 			else if(!partySelected && selectedIndex < inventory.Count)
@@ -314,12 +349,24 @@ public class CreatureManager : MonoBehaviour
 				Creature creature = inventory[selectedIndex];
 				if(creature != mergeA && creature != mergeB)
 				{
-					UpdateMerge(creature, selectedIndex);
-					//Remove creature from slot 3 if there
+					if(mergeA == null)
+						UpdateMerge(creature, 0);
+					else if(mergeB == null)
+						UpdateMerge(creature, 1);
+					if(mergeAB != null)UpdateMerge(null, 2);
 				}
 				else
 				{
-					UpdateMerge(null, party.IndexOf(inventory[selectedIndex]));
+					if(mergeA == creature)
+					{
+						UpdateMerge(null, 0);
+						mergeA = null;
+					}
+					if(mergeB == creature)
+					{
+						UpdateMerge(null, 0);
+						mergeB = null;
+					}
 				}
 			}
 		}

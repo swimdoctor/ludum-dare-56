@@ -73,7 +73,7 @@ public class Creature
 
     public int mergeLevel;
 
-    
+    private Creature() { }
 
     private Creature(string spriteName, List<string> name, BasicAttack primaryAttack, float attackPowerStat, float attackSpeedStat, float healthStat, float moveSpeedStat, List<Trait> traits)
     {
@@ -391,7 +391,11 @@ public class Creature
 
     public static Creature Merge(Creature A, Creature B)
     {
-        Creature AB = GetBasicCreature(BasicCreature.Burger);
+        Creature AB = new Creature();
+
+        AB.name = new List<string>();
+        AB.name.AddRange(A.name);
+        AB.name.AddRange(B.name);
 
         AB.mergeLevel = Mathf.Max(A.mergeLevel, B.mergeLevel) + 1;
         if (AB.mergeLevel > 3)
@@ -442,10 +446,17 @@ public class Creature
         }
 
         AB.traitList = traits;
-        
 
+		AB.head = UnityEngine.Random.value < .5f ? A.head : B.head;
+		AB.torso = UnityEngine.Random.value < .5f ? A.torso : B.torso;
+		AB.leftLeg = UnityEngine.Random.value < .5f ? A.leftLeg : B.leftLeg;
+		AB.rightLeg = UnityEngine.Random.value < .5f ? A.rightLeg : B.rightLeg;
+		AB.leftArm = UnityEngine.Random.value < .5f ? A.leftArm : B.leftArm;
+        AB.rightArm = UnityEngine.Random.value < .5f ? A.rightArm : B.rightArm;
+		AB.headAccessory = UnityEngine.Random.value < .5f ? A.headAccessory : B.headAccessory;
+		AB.backAccessory = UnityEngine.Random.value < .5f ? A.backAccessory : B.backAccessory;
 
-        return AB;
+		return AB;
     }
 
     private static float MergeStat(float parent1stat, float parent2stat)
@@ -472,13 +483,5 @@ public class Creature
         return passedDownStat;
     }
 
-    public bool Equals(Creature other)
-    {
-        return  other.name == name && 
-		        other.primaryAttack == primaryAttack &&
-		        other.attackPowerStat == attackPowerStat &&
-		        other.attackSpeedStat == attackSpeedStat &&
-		        other.healthStat == healthStat &&
-                other.moveSpeedStat == moveSpeedStat;
-    }
+    
 }
