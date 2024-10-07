@@ -160,37 +160,47 @@ public class UnitScript : MonoBehaviour
                 currentTarget = FindNewTarget();
             }
 
-            float distToTarget = Vector2.Distance(transform.position, currentTarget.transform.position);
-            if (distToTarget > primaryAttack.range * stats.rangeModifier)
-            {   // Move towards target
-                Vector2 direction = (currentTarget.transform.position - transform.position).normalized;
-                rb.AddForce(direction * stats.moveSpeed * 5, ForceMode2D.Force);
+            if (currentTarget == null)
+            {
+                // FindNewTarget did not find a valid target
+
             }
             else
             {
-                // Stop movement
-                if (rb.velocity.magnitude > 0)
-                {
-                    rb.velocity = Vector2.Lerp(rb.velocity, Vector2.zero, 0.75f * Time.fixedDeltaTime);
+                float distToTarget = Vector2.Distance(transform.position, currentTarget.transform.position);
+                if (distToTarget > primaryAttack.range * stats.rangeModifier)
+                {   // Move towards target
+                    Vector2 direction = (currentTarget.transform.position - transform.position).normalized;
+                    rb.AddForce(direction * stats.moveSpeed * 5, ForceMode2D.Force);
                 }
-
-
-                if (primaryAttackCooldown < 0)
+                else
                 {
-                    // Attack
-                    primaryAttack.Activate(this, currentTarget);
-
-                    float cooldownMod = 1f;
-                    if (primaryAttack.isMelee)
+                    // Stop movement
+                    if (rb.velocity.magnitude > 0)
                     {
-                        cooldownMod = stats.meleeAttackSpeed;
-                    } else if (primaryAttack.isRanged)
-                    {
-                        cooldownMod = stats.meleeAttackSpeed;
+                        rb.velocity = Vector2.Lerp(rb.velocity, Vector2.zero, 0.75f * Time.fixedDeltaTime);
                     }
-                    primaryAttackCooldown = primaryAttack.maxcooldown / cooldownMod;
+
+
+                    if (primaryAttackCooldown < 0)
+                    {
+                        // Attack
+                        primaryAttack.Activate(this, currentTarget);
+
+                        float cooldownMod = 1f;
+                        if (primaryAttack.isMelee)
+                        {
+                            cooldownMod = stats.meleeAttackSpeed;
+                        }
+                        else if (primaryAttack.isRanged)
+                        {
+                            cooldownMod = stats.meleeAttackSpeed;
+                        }
+                        primaryAttackCooldown = primaryAttack.maxcooldown / cooldownMod;
+                    }
                 }
             }
+                
         }
 
     }

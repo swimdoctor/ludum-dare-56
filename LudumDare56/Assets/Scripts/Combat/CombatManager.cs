@@ -12,6 +12,8 @@ public class CombatManager : MonoBehaviour
 
     public Button startButton;
 
+    public Button surrenderButton;
+
     public GameObject unitInfoPanel;
     private UnitInfoScript unitInfo;
     private FadeInOut unitInfoFade;
@@ -19,6 +21,9 @@ public class CombatManager : MonoBehaviour
     public GameObject victoryUI;
     [SerializeField] private Text victoryText;
     private FadeInOut victoryFade;
+
+    public GameObject lossUI;
+    private FadeInOut lossFade;
 
     public static Creature reward;
     public static bool giveReward;
@@ -64,6 +69,7 @@ public class CombatManager : MonoBehaviour
         unitInfoFade = unitInfo.GetComponent<FadeInOut>();
         
         victoryFade = victoryUI.GetComponent<FadeInOut>();
+        lossFade = lossUI.GetComponent<FadeInOut>();
 
         List<Creature> team1 = CreatureManager.instance.party;
         List<Creature> team2 = Creature.GenerateTeam(7, maxSize: 3);
@@ -71,6 +77,8 @@ public class CombatManager : MonoBehaviour
         SetupCombat(team1, team2);
 
         giveReward = false;
+
+        surrenderButton.gameObject.SetActive(false);
     }
 
     private void FixedUpdate()
@@ -79,7 +87,7 @@ public class CombatManager : MonoBehaviour
         int enemyCount = 0;
         foreach (UnitScript unit in listUnits)
         {
-            if (unit.team)
+            if (!unit.team)
             {
                 allyCount++;
             }
@@ -94,7 +102,7 @@ public class CombatManager : MonoBehaviour
             if (combatState == State.During)
             {
                 EndGame();
-                Win(); // TODO
+                Lose();
             }
         }
         else if (enemyCount == 0)
@@ -109,6 +117,7 @@ public class CombatManager : MonoBehaviour
 
     private void EndGame()
     {
+        surrenderButton.gameObject.SetActive(false);
         combatState = State.After;
     }
 
@@ -119,6 +128,17 @@ public class CombatManager : MonoBehaviour
 
         victoryText.text = $"{reward.Name} was like super impressed by your party's prowess. Let {reward.Name} join your team?";
         victoryFade.Show();
+    }
+
+    private void Lose()
+    {
+        lossFade.Show();
+    }
+
+    public void Surrender()
+    {
+        EndGame();
+        Lose();
     }
 
     public void RecruitUnit()
@@ -212,6 +232,7 @@ public class CombatManager : MonoBehaviour
             combatState = State.During;
 
             startButton.gameObject.SetActive(false);
+            surrenderButton.gameObject.SetActive(true);
         }
     }
 

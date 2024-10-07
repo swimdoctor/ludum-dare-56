@@ -22,12 +22,12 @@ public class HealProjectile : Projectile
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
-        if (target == null)
+        if (target == null || target.currentHP <= 0)
         {
             target = source.FindNewTarget();
 
         }
-        if (target == null)
+        if (target == null || target.currentHP <= 0)
         {
             isActive = false;
             StartCoroutine(Despawn());

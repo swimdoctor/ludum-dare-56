@@ -23,17 +23,17 @@ public class MagicProjectile : Projectile
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
-        if (target == null)
+        if (target == null || target.currentHP <= 0)
         {
             target = source.FindNewTarget();
-            
+
         }
-        if (target == null)
+        if (target == null || target.currentHP <= 0)
         {
             isActive = false;
             StartCoroutine(Despawn());
-        } 
-        else if (isActive) 
+        }
+        else if (isActive)
         {
             rb.MovePosition(Vector2.MoveTowards((new Vector2(rb.position.x, rb.position.y)), target.transform.position, speed));
         }
