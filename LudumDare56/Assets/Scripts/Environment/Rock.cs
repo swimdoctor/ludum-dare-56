@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class Rock : MonoBehaviour, IInteractable
 {
+    [SerializeField] private int difficulty;  
     public string CombatScene;
 
     public void Interact(GameObject User)
