@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FlameProjectile : Projectile
 {
-    private float speed = 0.125f;
+    private float speed = 0.13f;
 
     public override void Initialize(UnitScript source, Vector2 direction, BasicAttack attack, bool isHealProjectile, UnitScript target)
     {
@@ -16,7 +16,7 @@ public class FlameProjectile : Projectile
 
     private void Update()
     {
-        transform.rotation = Quaternion.Euler(0, 0, -90 + Mathf.Rad2Deg * Mathf.Atan2(direction.y, direction.x));
+        transform.rotation = Quaternion.Euler(0, 0, Mathf.Rad2Deg * Mathf.Atan2(direction.y, direction.x));
     }
 
     protected override void FixedUpdate()
@@ -24,6 +24,6 @@ public class FlameProjectile : Projectile
         base.FixedUpdate();
         
         rb.MovePosition(rb.position + (direction * speed));
-        speed *= 0.98f;
+        speed *= 0.99f;
     }
 }

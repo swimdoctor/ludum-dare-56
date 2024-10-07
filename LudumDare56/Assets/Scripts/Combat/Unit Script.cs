@@ -177,7 +177,7 @@ public class UnitScript : MonoBehaviour
             Vector2 excessVelocity = rb.velocity - rb.velocity.normalized * stats.moveSpeed;
 
             // Apply a counterforce in the opposite direction of the excess velocity
-            rb.AddForce(-excessVelocity.normalized * 0.5f, ForceMode2D.Impulse);
+            rb.AddForce(-excessVelocity.normalized * 0.25f, ForceMode2D.Impulse);
         }
     }
 

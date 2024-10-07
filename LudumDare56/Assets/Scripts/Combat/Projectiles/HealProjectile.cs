@@ -16,7 +16,7 @@ public class HealProjectile : Projectile
 
     private void Update()
     {
-        transform.rotation = Quaternion.Euler(0, 0, -90 + Mathf.Rad2Deg * Mathf.Atan2(direction.y, direction.x));
+        transform.rotation = Quaternion.Euler(0, 0, Mathf.Rad2Deg * Mathf.Atan2(direction.y, direction.x));
     }
 
     protected override void FixedUpdate()

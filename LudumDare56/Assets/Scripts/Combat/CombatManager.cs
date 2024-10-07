@@ -47,7 +47,7 @@ public class CombatManager : MonoBehaviour
         }
 
         List<Creature> team1 = GetTestTeam();
-        List<Creature> team2 = Creature.GenerateTeam(5, maxSize: 3);
+        List<Creature> team2 = Creature.GenerateTeam(7, maxSize: 3);
 
         SetupCombat(team1, team2);
 
@@ -108,7 +108,7 @@ public class CombatManager : MonoBehaviour
 
             if (unit.stats.startPosition == Vector2.zero)
             {
-                unit.transform.position = new Vector2(Random.Range(-8, 0), Random.Range(-5, 5));
+                unit.transform.position = new Vector2(Random.Range(-6f, -2f), Random.Range(-4f, 4f));
             } else
             {
                 unit.transform.position = unit.stats.startPosition;
@@ -129,7 +129,7 @@ public class CombatManager : MonoBehaviour
 
             unit.stats = creature;
             unit.team = true;
-            unit.transform.position = new Vector2(Random.Range(2, 8), Random.Range(-5, 5));
+            unit.transform.position = new Vector2(Random.Range(2f, 6f), Random.Range(-4f, 4f));
 
             unit.gameObject.layer = 11;
 
